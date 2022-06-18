@@ -1,11 +1,11 @@
-import React from 'react';
-import Login from './features/login/Login';
-
+import React from "react";
+import LoginForm from "@features/login/LoginForm";
+import LoginScreen from "@features/login/LoginScreen";
 
 function App() {
   return (
     <div className="App">
-      <Login></Login>
+      <LoginScreen></LoginScreen>
     </div>
   );
 }

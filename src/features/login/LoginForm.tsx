@@ -1,15 +1,15 @@
 import { SyntheticEvent } from "react";
 
-interface loginForm {
+interface ILoginForm {
   username: { value: string };
   password: { value: string };
 }
 
-export default function Login() {
+export default function LoginForm() {
   function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
 
-    const target = e.target as typeof e.target & loginForm;
+    const target = e.target as typeof e.target & ILoginForm;
 
     console.log(target.password.value, target.username.value);
   }
