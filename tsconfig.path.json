@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./",
+        "paths": {
+            "@/*": [
+                "./src/*"
+            ],
+            "@assets/*": [
+                "./src/assets/*"
+            ],
+            "@features/*": [
+                "./src/features/*"
+            ],
+            "@storeRedux": [
+                "./src/app/store.ts"
+            ],
+            "@hookRedux": [
+                "./src/app/hook.ts"
+            ],
+        },
+    }
+}
