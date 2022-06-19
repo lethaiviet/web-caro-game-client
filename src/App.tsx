@@ -1,5 +1,3 @@
-import React from "react";
-import LoginForm from "@features/login/LoginForm";
 import LoginScreen from "@features/login/LoginScreen";
 
 function App() {

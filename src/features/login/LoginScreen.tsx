@@ -1,26 +1,57 @@
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { useState } from "react";
+import { Button, Stack, Image, Container, Row } from "react-bootstrap";
+import { ModalLoginForm, ModalRegisterForm } from "./ModalForm";
+
+type ModalType = "" | "login" | "register";
 
 export default function LoginScreen() {
+  const [show, setShow] = useState<ModalType>("");
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) =>
+    setShow(e.currentTarget.value as ModalType);
+
+  const handleClose = () => setShow("");
+
   return (
-    <div className="container-fluid">
-      <Col className="d-flex flex-column align-items-center justify-content-center min-vw-100 min-vh-100">
-        <Row>
-          <div style={{ height: "200px" }}>
-            <img
-              src="https://via.placeholder.com/200"
-              alt="..."
-              className="img-fluid align-self-center"
-            />
-          </div>
-        </Row>
-        <Row>
-          <h1>Caro Game</h1>
-        </Row>
-        <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-          <Button className="btn-lg">Login</Button>
-          <Button className="btn-secondary btn-lg">Register</Button>
-        </div>
-      </Col>
-    </div>
+    <>
+      <Container fluid>
+        <Stack className="align-items-center justify-content-center min-vh-100">
+          <Row>
+            <div style={{ height: "200px" }}>
+              <Image src="https://via.placeholder.com/200" alt="..." fluid />
+            </div>
+          </Row>
+
+          <Row>
+            <h1>Caro Game</h1>
+          </Row>
+
+          <Stack
+            direction="horizontal"
+            gap={2}
+            className="justify-content-center"
+          >
+            <Button onClick={handleClick} className="btn-lg" value="login">
+              Login
+            </Button>
+            <Button
+              onClick={handleClick}
+              className="btn-secondary btn-lg"
+              value="register"
+            >
+              Register
+            </Button>
+          </Stack>
+        </Stack>
+      </Container>
+
+      <ModalLoginForm
+        show={show === "login"}
+        handleClose={handleClose}
+      ></ModalLoginForm>
+      <ModalRegisterForm
+        show={show === "register"}
+        handleClose={handleClose}
+      ></ModalRegisterForm>
+    </>
   );
 }
