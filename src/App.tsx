@@ -1,11 +1,19 @@
-import LoginScreen from "@features/login/LoginScreen";
-import MenuBar from "@features/navigation/MenuBar";
-// import SideBar from "@/features/chat/SideBar";
+import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
+import { store } from "@storeRedux";
+import RootConfig from "./navigation/RootConfig";
+
+import "bootstrap/dist/css/bootstrap.min.css";
+
 function App() {
   return (
-    <div className="App">
-      <MenuBar></MenuBar>
-    </div>
+    <>
+      <Provider store={store}>
+        <BrowserRouter>
+          <RootConfig />
+        </BrowserRouter>
+      </Provider>
+    </>
   );
 }
 

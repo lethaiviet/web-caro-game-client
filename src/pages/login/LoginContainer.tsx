@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Button, Stack, Image, Container, Row } from "react-bootstrap";
-import { ModalLoginForm, ModalRegisterForm } from "./ModalForm";
+import { ModalLoginForm, ModalRegisterForm } from "./components/ModalForm";
 
 type ModalType = "" | "login" | "register";
 
-export default function LoginScreen() {
+export default function LoginContainer() {
   const [show, setShow] = useState<ModalType>("");
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) =>
     setShow(e.currentTarget.value as ModalType);
