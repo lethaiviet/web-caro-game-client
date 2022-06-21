@@ -63,7 +63,7 @@ function MessageIcon() {
 function Header() {
     return (
         <>
-            <Navbar bg="light" expand="sm" style={{ height: `${LAYOUT__HEADER__NAV_BAR_HEIGHT}px` }}>
+            <Navbar bg="light" expand="sm" className="navbar-header border-bottom">
                 <Container fluid>
                     <Navbar.Brand href="#">
                         <Image

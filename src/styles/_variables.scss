@@ -1,1 +1,9 @@
+//LAYOUT - HEADER
+$navbar-header-height: 70px;
+
+//PAGES - CHAT
 $side-bar-chat-width: 250px;
+$chat-search-height: 52px;
+$scoll-bar-chat-height: calc(
+  100% - $navbar-header-height - $chat-search-height
+);
