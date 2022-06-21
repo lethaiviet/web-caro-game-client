@@ -9,7 +9,7 @@
 }
 
 .chat-search {
-  border-color: #dee2e6;
+  border-color: $chat-border-color;
   outline: none;
   padding: 15px;
   height: $chat-search-height;
@@ -17,4 +17,85 @@
 
 .side-bar-chat .scoll-bar-chat {
   height: $scoll-bar-chat-height;
+}
+
+.message-to-send {
+  width: 100%;
+  border-radius: 10rem;
+  outline: none;
+  border: 1px solid $chat-border-color;
+  padding: 6px 12px;
+}
+
+.send-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-radius: 50%;
+  height: 36px;
+  width: 36px;
+  padding: 0;
+  transform: translate(-21px, 21px);
+}
+
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  height: 100hv;
+  flex: 1 1 auto;
+}
+
+.chat-history {
+  padding: 30px 30px 20px;
+  height: $chat-history-height;
+  background-color: #f2f5f8;
+
+  .message-data {
+    margin-bottom: 15px;
+  }
+
+  .message-data-time {
+    color: lighten($gray, 8%);
+    padding-left: 6px;
+  }
+
+  .message {
+    color: white;
+    padding: 18px 20px;
+    line-height: 26px;
+    font-size: 16px;
+    margin-bottom: 30px;
+    margin-top: 15px;
+    width: 90%;
+    position: relative;
+
+    &:after {
+      bottom: 100%;
+      left: 5%;
+      border: solid transparent;
+      content: " ";
+      height: 0;
+      width: 0;
+      position: absolute;
+      pointer-events: none;
+      border-bottom-color: $green;
+      border-width: 10px;
+      margin-left: -10px;
+    }
+  }
+
+  .other-message {
+    background: $green;
+    border-radius: 0px 7px 7px 7px;
+  }
+
+  .my-message {
+    background: $blue;
+    border-radius: 7px 0px 7px 7px;
+
+    &:after {
+      border-bottom-color: $blue;
+      left: 95%;
+    }
+  }
 }

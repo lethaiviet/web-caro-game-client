@@ -1,9 +1,25 @@
+$green: #86bb71;
+$blue: #94c2ed;
+$orange: #e38968;
+$gray: #92959e;
+
+$chat-border-color: #dee2e6;
+
 //LAYOUT - HEADER
 $navbar-header-height: 70px;
 
 //PAGES - CHAT
 $side-bar-chat-width: 250px;
+
 $chat-search-height: 52px;
+
+$contact-height: 89px;
+$chat-message-height: 78px;
+
 $scoll-bar-chat-height: calc(
-  100% - $navbar-header-height - $chat-search-height
+  100% - #{$navbar-header-height} - #{$chat-search-height}
+);
+
+$chat-history-height: calc(
+  100% - #{$navbar-header-height} - #{$contact-height} - #{$chat-message-height}
 );

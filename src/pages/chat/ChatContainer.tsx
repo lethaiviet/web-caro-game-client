@@ -1,9 +1,10 @@
-import { SideBarChat } from "./components";
+import { ChatBox, SideBarChat } from "./components";
 
 export default function ChatContainer() {
   return (
-    <div>
+    <div className="d-flex flex-wrap">
       <SideBarChat />
+      <ChatBox></ChatBox>
     </div>
   );
 }
