@@ -6,11 +6,10 @@ export default function Contact() {
     <div className="w-100">
       <Stack
         direction="horizontal"
-        className="border-start border-bottom border-end"
-        style={{ padding: "20px" }}
+        className="border-start border-bottom border-end P-20"
       >
-        <Avatar style={{ marginRight: "20px" }} />
-        <Stack className="justify-content-center">
+        <Avatar />
+        <Stack className="justify-content-center pL-20">
           <small className="lh-1">Fake Name</small>
           <h6 className="lh-1 my-0 fw-light">Online</h6>
         </Stack>

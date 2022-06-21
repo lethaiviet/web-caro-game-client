@@ -3,7 +3,6 @@ import { BrowserRouter } from "react-router-dom";
 import { store } from "@storeRedux";
 import RootConfig from "./navigation/RootConfig";
 
-import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (
