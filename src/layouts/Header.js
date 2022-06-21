@@ -6,6 +6,8 @@ import {
     Image,
     Badge,
 } from "react-bootstrap";
+import { Outlet } from "react-router-dom";
+import { LAYOUT__HEADER__NAV_BAR_HEIGHT } from "@config/const";
 
 function DropdownToggleTitle() {
     return (
@@ -61,7 +63,7 @@ function MessageIcon() {
 function Header() {
     return (
         <>
-            <Navbar bg="light" expand="sm" className="mb-3">
+            <Navbar bg="light" expand="sm" style={{ height: `${LAYOUT__HEADER__NAV_BAR_HEIGHT}px` }}>
                 <Container fluid>
                     <Navbar.Brand href="#">
                         <Image
@@ -99,6 +101,8 @@ function Header() {
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
+
+            <Outlet />
         </>
     );
 }

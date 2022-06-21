@@ -10,7 +10,9 @@ function App() {
     <>
       <Provider store={store}>
         <BrowserRouter>
-          <RootConfig />
+          <div className="vh-100 overflow-hidden">
+            <RootConfig />
+          </div>
         </BrowserRouter>
       </Provider>
     </>

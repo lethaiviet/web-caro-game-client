@@ -11,6 +11,9 @@
             "@features/*": [
                 "./src/features/*"
             ],
+            "@config": [
+                "./src/config/*"
+            ],
             "@storeRedux": [
                 "./src/app/store.ts"
             ],
