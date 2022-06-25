@@ -1,8 +1,11 @@
+import { ROOT } from "@/navigation/const";
 import { useAppDispatch, useAppSelector } from "@hookRedux";
+import { unwrapResult } from "@reduxjs/toolkit";
 import { SyntheticEvent } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { selectAuth } from "../authSlice";
-import { AuthData, signup } from "../authThunk";
+import { AuthData, login, signup } from "../authThunk";
 
 type ModalProps = {
   title?: string;
@@ -67,12 +70,15 @@ const ModalTemp = ({
 
 const ModalLoginForm = ({ show, onClose }: ModalProps) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { message } = useAppSelector(selectAuth);
 
   function handleSignUp(e: SyntheticEvent) {
     e.preventDefault();
     const authData: AuthData = getDataFormAsAuthData(e);
-    dispatch(signup(authData));
+    dispatch(login(authData))
+      .then(unwrapResult)
+      .then(() => navigate(ROOT));
   }
 
   return (

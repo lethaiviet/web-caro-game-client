@@ -30,4 +30,20 @@ const signup = createAsyncThunk<Message, AuthData, { rejectValue: Message }>(
   }
 );
 
-export { signup };
+const login = createAsyncThunk<boolean, AuthData, { rejectValue: Message }>(
+  "auth/login",
+  async ({ email, password }: AuthData, thunkApi) => {
+    try {
+      await axios.post(BASE_URL_SERVER.concat("/login"), { email, password });
+      return true;
+    } catch (error) {
+      const message: Message = axios.isAxiosError(error)
+        ? (error.response?.data as Message)
+        : { message: "You cannot login. Please contact with admin." };
+
+      return thunkApi.rejectWithValue(message);
+    }
+  }
+);
+
+export { signup, login };

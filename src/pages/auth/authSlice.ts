@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "@storeRedux";
-import { signup } from "./authThunk";
+import { signup, login } from "./authThunk";
 
 export interface AuthState {
   username: string;
   password: string;
   status: "idle" | "pending" | "error" | "success";
   message: string | null;
+  authorized: boolean;
 }
 
 const initialState: AuthState = {
@@ -14,6 +15,7 @@ const initialState: AuthState = {
   password: "",
   status: "idle",
   message: null,
+  authorized: false,
 };
 
 export const AuthSlice = createSlice({
@@ -43,6 +45,21 @@ export const AuthSlice = createSlice({
     builder.addCase(signup.rejected, (state: AuthState, action) => {
       state.status = "error";
       state.message = action.payload?.message || null;
+    });
+
+    //login
+    builder.addCase(login.pending, (state: AuthState) => {
+      state.status = "pending";
+      state.message = null;
+    });
+    builder.addCase(login.fulfilled, (state: AuthState, action) => {
+      state.status = "success";
+      state.authorized = true;
+    });
+    builder.addCase(login.rejected, (state: AuthState, action) => {
+      state.status = "error";
+      state.message = action.payload?.message || null;
+      state.authorized = false;
     });
   },
 });

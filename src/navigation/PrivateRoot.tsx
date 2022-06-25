@@ -4,7 +4,6 @@ import { Navigate, Outlet } from "react-router-dom";
 import { LOGIN } from "./const";
 
 export function PrivateRoot() {
-  const { status } = useAppSelector(selectAuth);
-  console.log(status);
-  return status === "success" ? <Outlet /> : <Navigate to={LOGIN} />;
+  const { authorized } = useAppSelector(selectAuth);
+  return authorized ? <Outlet /> : <Navigate to={LOGIN} />;
 }
