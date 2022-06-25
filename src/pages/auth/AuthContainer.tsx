@@ -46,11 +46,11 @@ export default function LoginContainer() {
 
       <ModalLoginForm
         show={show === "login"}
-        handleClose={handleClose}
+        onClose={handleClose}
       ></ModalLoginForm>
       <ModalRegisterForm
         show={show === "register"}
-        handleClose={handleClose}
+        onClose={handleClose}
       ></ModalRegisterForm>
     </>
   );
