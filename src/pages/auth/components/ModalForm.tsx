@@ -1,6 +1,7 @@
-import { useAppDispatch } from "@hookRedux";
+import { useAppDispatch, useAppSelector } from "@hookRedux";
 import { SyntheticEvent } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
+import { selectAuth } from "../authSlice";
 import { AuthData, signup } from "../authThunk";
 
 type ModalProps = {
@@ -9,6 +10,7 @@ type ModalProps = {
   buttonName?: string;
   onClose?: () => void;
   onSubmit?: (e: SyntheticEvent) => void;
+  errorMessage?: string | null;
 };
 
 function getDataFormAsAuthData(e: SyntheticEvent): AuthData {
@@ -23,6 +25,7 @@ const ModalTemp = ({
   buttonName,
   onClose,
   onSubmit,
+  errorMessage,
 }: ModalProps) => {
   return (
     <>
@@ -51,6 +54,9 @@ const ModalTemp = ({
               <Form.Label>Password</Form.Label>
               <Form.Control name="password" type="password" required />
             </Form.Group>
+            <Form.Group className="mb-2" controlId="loginForm.input.password">
+              <Form.Text>{errorMessage}</Form.Text>
+            </Form.Group>
             <Button type="submit">{buttonName}</Button>
           </Form>
         </Modal.Body>
@@ -61,38 +67,44 @@ const ModalTemp = ({
 
 const ModalLoginForm = ({ show, onClose }: ModalProps) => {
   const dispatch = useAppDispatch();
+  const { message } = useAppSelector(selectAuth);
 
-  function handleSubmit(e: SyntheticEvent) {
+  function handleSignUp(e: SyntheticEvent) {
     e.preventDefault();
     const authData: AuthData = getDataFormAsAuthData(e);
     dispatch(signup(authData));
   }
+
   return (
     <ModalTemp
       title="Login"
       buttonName="Login"
       show={show}
       onClose={onClose}
-      onSubmit={handleSubmit}
+      onSubmit={handleSignUp}
+      errorMessage={message}
     />
   );
 };
 
 const ModalRegisterForm = ({ show, onClose }: ModalProps) => {
   const dispatch = useAppDispatch();
+  const { message } = useAppSelector(selectAuth);
 
-  function handleSubmit(e: SyntheticEvent) {
+  function handleLogin(e: SyntheticEvent) {
     e.preventDefault();
     const authData: AuthData = getDataFormAsAuthData(e);
     dispatch(signup(authData));
   }
+
   return (
     <ModalTemp
       title="Register"
       buttonName="Register"
       show={show}
       onClose={onClose}
-      onSubmit={handleSubmit}
+      onSubmit={handleLogin}
+      errorMessage={message}
     />
   );
 };

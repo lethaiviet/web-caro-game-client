@@ -6,14 +6,14 @@ export interface AuthState {
   username: string;
   password: string;
   status: "idle" | "pending" | "error" | "success";
-  message: string;
+  message: string | null;
 }
 
 const initialState: AuthState = {
   username: "",
   password: "",
   status: "idle",
-  message: "",
+  message: null,
 };
 
 export const AuthSlice = createSlice({
@@ -26,33 +26,28 @@ export const AuthSlice = createSlice({
     setPassword(state, action: PayloadAction<string>) {
       state.password = action.payload;
     },
+    clearAuthStates(state) {
+      Object.assign(state, initialState);
+    },
   },
   extraReducers: (builder) => {
     //signup
-    builder.addCase(signup.pending, (state: { status: string }) => {
+    builder.addCase(signup.pending, (state: AuthState) => {
       state.status = "pending";
+      state.message = null;
     });
-    builder.addCase(
-      signup.fulfilled,
-      (state: { status: string; message: any }, { payload }: any) => {
-        state.status = "success";
-        state.message = payload;
-      }
-    );
-    builder.addCase(
-      signup.rejected,
-      (
-        state: { status: string; message: string },
-        action: { payload: any }
-      ) => {
-        state.status = "error";
-        state.message = action.payload;
-      }
-    );
+    builder.addCase(signup.fulfilled, (state: AuthState, action) => {
+      state.status = "success";
+      state.message = action.payload?.message;
+    });
+    builder.addCase(signup.rejected, (state: AuthState, action) => {
+      state.status = "error";
+      state.message = action.payload?.message || null;
+    });
   },
 });
 
-export const { setUsername, setPassword } = AuthSlice.actions;
+export const { setUsername, setPassword, clearAuthStates } = AuthSlice.actions;
 
 export const selectAuth = (state: RootState) => state.auth;
 

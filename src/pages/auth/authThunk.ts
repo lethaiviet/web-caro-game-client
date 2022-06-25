@@ -7,22 +7,25 @@ export interface AuthData {
   password: string;
 }
 
-const signup = createAsyncThunk(
+export interface Message {
+  message: string;
+}
+
+const signup = createAsyncThunk<Message, AuthData, { rejectValue: Message }>(
   "auth/signup",
   async ({ email, password }: AuthData, thunkApi) => {
     try {
-      const res = await axios.post(BASE_URL_SERVER.concat("/signup"), {
-        email,
-        password,
-      });
-
-      return res.data;
+      await axios.post(BASE_URL_SERVER.concat("/signup"), { email, password });
+      return {
+        message:
+          "You signup successfully. Please check email to active your account.",
+      };
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        return thunkApi.rejectWithValue(error.response?.data);
-      } else {
-        return thunkApi.rejectWithValue(error);
-      }
+      const message: Message = axios.isAxiosError(error)
+        ? (error.response?.data as Message)
+        : { message: "You cannot signup. Please contact with admin." };
+
+      return thunkApi.rejectWithValue(message);
     }
   }
 );

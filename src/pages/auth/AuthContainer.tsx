@@ -1,13 +1,19 @@
+import { useAppDispatch } from "@/app/hook";
 import { useState } from "react";
 import { Button, Stack, Image, Container, Row } from "react-bootstrap";
+import { clearAuthStates } from "./authSlice";
 import { ModalLoginForm, ModalRegisterForm } from "./components/ModalForm";
 
 type ModalType = "" | "login" | "register";
 
 export default function LoginContainer() {
   const [show, setShow] = useState<ModalType>("");
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) =>
+  const dispatch = useAppDispatch();
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setShow(e.currentTarget.value as ModalType);
+    dispatch(clearAuthStates());
+  };
 
   const handleClose = () => setShow("");
 
