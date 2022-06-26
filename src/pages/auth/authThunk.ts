@@ -1,49 +1,32 @@
-import { BASE_URL_SERVER } from "@/config/const";
+import {
+  AuthDataRequest,
+  AuthDataResponse,
+  UserService,
+} from "@/services/user.service";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 
-export interface AuthData {
-  email: string;
-  password: string;
-}
-
-export interface Message {
-  message: string;
-}
-
-const signup = createAsyncThunk<Message, AuthData, { rejectValue: Message }>(
-  "auth/signup",
-  async ({ email, password }: AuthData, thunkApi) => {
-    try {
-      await axios.post(BASE_URL_SERVER.concat("/signup"), { email, password });
-      return {
-        message:
-          "You signup successfully. Please check email to active your account.",
-      };
-    } catch (error) {
-      const message: Message = axios.isAxiosError(error)
-        ? (error.response?.data as Message)
-        : { message: "You cannot signup. Please contact with admin." };
-
-      return thunkApi.rejectWithValue(message);
-    }
+const signup = createAsyncThunk<
+  AuthDataResponse,
+  AuthDataRequest,
+  { rejectValue: AuthDataResponse }
+>("auth/signup", async (data: AuthDataRequest, thunkApi) => {
+  try {
+    return await UserService.signup(data);
+  } catch (error) {
+    return thunkApi.rejectWithValue(error as AuthDataResponse);
   }
-);
+});
 
-const login = createAsyncThunk<boolean, AuthData, { rejectValue: Message }>(
-  "auth/login",
-  async ({ email, password }: AuthData, thunkApi) => {
-    try {
-      await axios.post(BASE_URL_SERVER.concat("/login"), { email, password });
-      return true;
-    } catch (error) {
-      const message: Message = axios.isAxiosError(error)
-        ? (error.response?.data as Message)
-        : { message: "You cannot login. Please contact with admin." };
-
-      return thunkApi.rejectWithValue(message);
-    }
+const login = createAsyncThunk<
+  boolean,
+  AuthDataRequest,
+  { rejectValue: AuthDataResponse }
+>("auth/login", async (data: AuthDataRequest, thunkApi) => {
+  try {
+    return await UserService.login(data);
+  } catch (error) {
+    return thunkApi.rejectWithValue(error as AuthDataResponse);
   }
-);
+});
 
 export { signup, login };

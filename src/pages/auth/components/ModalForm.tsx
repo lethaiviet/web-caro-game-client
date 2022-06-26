@@ -1,11 +1,12 @@
 import { ROOT } from "@/navigation/const";
+import { AuthDataRequest } from "@/services/user.service";
 import { useAppDispatch, useAppSelector } from "@hookRedux";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { SyntheticEvent } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { selectAuth } from "../authSlice";
-import { AuthData, login, signup } from "../authThunk";
+import { login, signup } from "../authThunk";
 
 type ModalProps = {
   title?: string;
@@ -16,10 +17,10 @@ type ModalProps = {
   errorMessage?: string | null;
 };
 
-function getDataFormAsAuthData(e: SyntheticEvent): AuthData {
+function getDataForm(e: SyntheticEvent): AuthDataRequest {
   const formData = new FormData(e.target as HTMLFormElement);
   const formDataObj = Object.fromEntries(formData.entries());
-  return formDataObj as unknown as AuthData;
+  return formDataObj as unknown as AuthDataRequest;
 }
 
 const ModalTemp = ({
@@ -75,8 +76,8 @@ const ModalLoginForm = ({ show, onClose }: ModalProps) => {
 
   function handleSignUp(e: SyntheticEvent) {
     e.preventDefault();
-    const authData: AuthData = getDataFormAsAuthData(e);
-    dispatch(login(authData))
+    const data: AuthDataRequest = getDataForm(e);
+    dispatch(login(data))
       .then(unwrapResult)
       .then(() => navigate(ROOT));
   }
@@ -99,8 +100,8 @@ const ModalRegisterForm = ({ show, onClose }: ModalProps) => {
 
   function handleLogin(e: SyntheticEvent) {
     e.preventDefault();
-    const authData: AuthData = getDataFormAsAuthData(e);
-    dispatch(signup(authData));
+    const data: AuthDataRequest = getDataForm(e);
+    dispatch(signup(data));
   }
 
   return (
