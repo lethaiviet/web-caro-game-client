@@ -23,3 +23,5 @@ $scoll-bar-chat-height: calc(
 $chat-history-height: calc(
   100% - #{$navbar-header-height} - #{$contact-height} - #{$chat-message-height}
 );
+
+$spinner-width: 3rem;

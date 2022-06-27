@@ -1,7 +1,6 @@
-import {
+import UserService, {
   AuthDataRequest,
   AuthDataResponse,
-  UserService,
 } from "@/services/user.service";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -29,4 +28,11 @@ const login = createAsyncThunk<
   }
 });
 
-export { signup, login };
+const checkAccessToken = createAsyncThunk<boolean>(
+  "auth/check-access-token",
+  async () => {
+    return await UserService.checkAccessToken();
+  }
+);
+
+export { signup, login, checkAccessToken };

@@ -1,6 +1,14 @@
 import axios from "axios";
 import { BASE_URL_SERVER } from "@/config/const";
 import ErrorHandlerService from "./error-handler.service";
+import StorageService, { COOKIES_ITEMS } from "./storage.service";
+
+export interface User {
+  _id: string;
+  accessToken: string;
+  email: string;
+  password: string;
+}
 
 export interface AuthDataRequest {
   email: string;
@@ -16,11 +24,12 @@ export interface AuthDataResponse {
   message: string;
 }
 
-export class UserService {
-  static async signup(data: AuthDataRequest): Promise<AuthDataResponse> {
+class UserService {
+  constructor(private ehs = new ErrorHandlerService<AuthDataResponse>()) {}
+
+  async signup(data: AuthDataRequest): Promise<AuthDataResponse> {
     try {
       await axios.post(BASE_URL_SERVER.concat("/signup"), data);
-
       return {
         message:
           "You signup successfully. Please check email to active your account.",
@@ -39,9 +48,17 @@ export class UserService {
     }
   }
 
-  static async login(data: AuthDataRequest): Promise<boolean> {
+  async login(data: AuthDataRequest): Promise<boolean> {
     try {
-      await axios.post(BASE_URL_SERVER.concat("/login"), data);
+      const res = await axios.post(BASE_URL_SERVER.concat("/login"), data);
+      const { accessToken, email, password } = res.data?.data as User;
+      console.log({ accessToken, email, password });
+      StorageService.setCookies(COOKIES_ITEMS.CURRENT_USER, {
+        accessToken,
+        email,
+        password,
+      });
+
       return true;
     } catch (error: any) {
       const defaultRes: AuthDataResponse = {
@@ -57,11 +74,28 @@ export class UserService {
     }
   }
 
-  private static getErrorResponeOrDefault<T>(error: any, defaultVal: T): T {
-    const ehs = new ErrorHandlerService<T>();
-    ehs.handleErrorMessage(error);
+  async checkAccessToken(): Promise<boolean> {
+    const currentUser = StorageService.getCookies(COOKIES_ITEMS.CURRENT_USER);
+    if (!currentUser) return false;
 
-    const errorResponse: T = ehs.errorMsg || defaultVal;
+    try {
+      await axios.post(BASE_URL_SERVER.concat("/check/token"), currentUser);
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
+
+  private getErrorResponeOrDefault(
+    error: any,
+    defaultVal: AuthDataResponse
+  ): AuthDataResponse {
+    this.ehs.handleErrorMessage(error);
+
+    const errorResponse: AuthDataResponse = this.ehs.errorMsg || defaultVal;
     return errorResponse;
   }
 }
+
+export default new UserService();
