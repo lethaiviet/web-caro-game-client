@@ -10,8 +10,12 @@ import {
   Form,
 } from "react-bootstrap";
 import userImag from "@/assets/icon-game.png";
+import { useState, SyntheticEvent } from "react";
+interface DetailProfileCardProps {
+  onClick: () => void;
+}
 
-const DetailProfileCard = () => {
+const DetailProfileCard = ({ onClick }: DetailProfileCardProps) => {
   return (
     <Card>
       <Card.Body>
@@ -45,17 +49,31 @@ const DetailProfileCard = () => {
             </Col>
           </Row>
         </Col>
-        <Button>Edit</Button>
+        <Button onClick={onClick}>Edit</Button>
       </Card.Body>
     </Card>
   );
 };
 
-const EditableDetailProfileCard = () => {
+interface EditableDetailProfileCardProps {
+  setShow: (value: React.SetStateAction<CardType>) => void;
+}
+
+const EditableDetailProfileCard = ({
+  setShow,
+}: EditableDetailProfileCardProps) => {
+  const [name, setName] = useState("");
+  const [bio, setBio] = useState("");
+
+  const handleSubmit = (e: SyntheticEvent) => {
+    e.preventDefault();
+    setShow("Card");
+  };
+
   return (
     <Card>
       <Card.Body>
-        <Form>
+        <Form onSubmit={handleSubmit}>
           <Col>
             <Row className="border-bottom mb-3 pb-2">
               <Col md={3}>
@@ -80,7 +98,8 @@ const EditableDetailProfileCard = () => {
                   name="name"
                   type="text"
                   required
-                  value="yellowCat"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                 />
               </Col>
             </Row>
@@ -96,19 +115,24 @@ const EditableDetailProfileCard = () => {
                   rows={3}
                   maxLength={200}
                   style={{ maxHeight: "200px" }}
-                  //   value="I'm a big cat with yellow color"
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
                 />
               </Col>
             </Row>
           </Col>
+          <Button type="submit">Save</Button>
         </Form>
-        <Button>Save</Button>
       </Card.Body>
     </Card>
   );
 };
 
+type CardType = "EditableCard" | "Card";
+
 export const UserProfile = () => {
+  const [show, setShow] = useState<CardType>("Card");
+
   return (
     <Container className="mt-3">
       <Row>
@@ -137,7 +161,11 @@ export const UserProfile = () => {
         </Col>
 
         <Col md={8}>
-          <DetailProfileCard />
+          {show === "Card" ? (
+            <DetailProfileCard onClick={() => setShow("EditableCard")} />
+          ) : (
+            <EditableDetailProfileCard setShow={setShow} />
+          )}
         </Col>
       </Row>
     </Container>
