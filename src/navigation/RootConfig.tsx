@@ -17,8 +17,8 @@ function RootConfig() {
           <Route path={ROOT} element={<Header />}>
             <Route path={CHAT} element={<Chat />} />
             <Route path={ROOT} element={<Home />} />
+            <Route path={USER_PROFILE} element={<UserProfile />} />
           </Route>
-          <Route path={USER_PROFILE} element={<UserProfile />} />
         </Route>
 
         <Route path={LOGIN} element={<Auth />} />

@@ -6,9 +6,10 @@ import {
     Image,
     Badge,
 } from "react-bootstrap";
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import iconGame from "@assets/mini-icon-game.png";
 import { ROOT, USER_PROFILE } from "@/navigation/const"
+import { useLocation } from 'react-router-dom'
 
 function DropdownToggleTitle() {
     return (
@@ -61,12 +62,51 @@ function MessageIcon() {
     );
 }
 
+function NavBarCollapse() {
+    return (
+        <>
+            <Navbar.Toggle aria-controls="navbar-user-profile" />
+
+            <Navbar.Collapse
+                id="navbar-user-profile"
+                className="justify-content-end align-items-center"
+            >
+
+                <MessageIcon />
+
+                <Nav>
+                    <NavDropdown id="nav-dropdown" title={<DropdownToggleTitle />}>
+                        <NavDropdown.Item href="#action/3.1">
+                            <IconSetting />
+                            Setting
+                        </NavDropdown.Item>
+                        <NavDropdown.Item as={Link} to={USER_PROFILE}>
+                            <IconSetting />
+                            Profile
+                        </NavDropdown.Item>
+                        <NavDropdown.Divider />
+                        <NavDropdown.Item href="#action/3.4">
+                            <IconSetting />
+                            Logout
+                        </NavDropdown.Item>
+                    </NavDropdown>
+                </Nav>
+
+            </Navbar.Collapse>
+        </>
+    )
+}
+
 function Header() {
+    const location = useLocation();
+    const atUserProfile = location.pathname === USER_PROFILE;
+
     return (
         <>
             <Navbar bg="light" expand="sm" className="navbar-header border-bottom">
-                <Container fluid>
-                    <Navbar.Brand href={ROOT}>
+
+                <Container fluid className={atUserProfile ? "justify-content-start" : ""}>
+                    <Navbar.Brand as={Link} to={ROOT}>
                         <Image
                             style={{ width: "2.3rem" }}
                             src={iconGame}
@@ -75,32 +115,16 @@ function Header() {
                         />
                     </Navbar.Brand>
 
-                    <Navbar.Toggle aria-controls="navbar-user-profile" />
-                    <Navbar.Collapse
-                        id="navbar-user-profile"
-                        className="justify-content-end align-items-center"
-                    >
-                        <MessageIcon />
+                    {
+                        atUserProfile ?
+                            <Navbar.Brand as={Link} to={USER_PROFILE}>
+                                User Profile
+                            </Navbar.Brand> :
+                            <NavBarCollapse />
+                    }
 
-                        <Nav>
-                            <NavDropdown id="nav-dropdown" title={<DropdownToggleTitle />}>
-                                <NavDropdown.Item href="#action/3.1">
-                                    <IconSetting />
-                                    Setting
-                                </NavDropdown.Item>
-                                <NavDropdown.Item href={USER_PROFILE}>
-                                    <IconSetting />
-                                    Profile
-                                </NavDropdown.Item>
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item href="#action/3.4">
-                                    <IconSetting />
-                                    Logout
-                                </NavDropdown.Item>
-                            </NavDropdown>
-                        </Nav>
-                    </Navbar.Collapse>
                 </Container>
+
             </Navbar>
 
             <Outlet />
