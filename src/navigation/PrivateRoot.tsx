@@ -21,7 +21,7 @@ export function PrivateRoot() {
     };
 
     dispatchCheckAccessToken();
-    console.log([authorized, loading]);
+    // eslint-disable-next-line
   }, []);
 
   return authorized ? (

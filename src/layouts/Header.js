@@ -7,7 +7,8 @@ import {
     Badge,
 } from "react-bootstrap";
 import { Outlet } from "react-router-dom";
-import { LAYOUT__HEADER__NAV_BAR_HEIGHT } from "@config/const";
+import iconGame from "@assets/mini-icon-game.png";
+import { ROOT, USER_PROFILE } from "@/navigation/const"
 
 function DropdownToggleTitle() {
     return (
@@ -65,10 +66,10 @@ function Header() {
         <>
             <Navbar bg="light" expand="sm" className="navbar-header border-bottom">
                 <Container fluid>
-                    <Navbar.Brand href="#">
+                    <Navbar.Brand href={ROOT}>
                         <Image
                             style={{ width: "2.3rem" }}
-                            src="https://via.placeholder.com/200?text=G"
+                            src={iconGame}
                             alt="..."
                             fluid
                         />
@@ -87,7 +88,7 @@ function Header() {
                                     <IconSetting />
                                     Setting
                                 </NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.2">
+                                <NavDropdown.Item href={USER_PROFILE}>
                                     <IconSetting />
                                     Profile
                                 </NavDropdown.Item>

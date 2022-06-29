@@ -67,9 +67,9 @@ export const AuthSlice = createSlice({
       state.status = "pending";
       state.message = null;
     });
-    builder.addCase(checkAccessToken.fulfilled, (state: AuthState) => {
+    builder.addCase(checkAccessToken.fulfilled, (state: AuthState, action) => {
       state.status = "success";
-      state.authorized = true;
+      state.authorized = action.payload;
     });
     builder.addCase(checkAccessToken.rejected, (state: AuthState) => {
       state.status = "error";

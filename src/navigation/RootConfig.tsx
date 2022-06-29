@@ -5,8 +5,9 @@ import Auth from "@/pages/auth";
 import Page404 from "@/pages/others/Page404";
 import Page500 from "@/pages/others/Page500";
 import { Routes, Route } from "react-router-dom";
-import { LOGIN, ROOT, CHAT, OTHERS, ERROR_500 } from "./const";
+import { LOGIN, ROOT, CHAT, OTHERS, ERROR_500, USER_PROFILE } from "./const";
 import { PrivateRoot } from "./PrivateRoot";
+import UserProfile from "@/pages/user";
 
 function RootConfig() {
   return (
@@ -17,7 +18,9 @@ function RootConfig() {
             <Route path={CHAT} element={<Chat />} />
             <Route path={ROOT} element={<Home />} />
           </Route>
+          <Route path={USER_PROFILE} element={<UserProfile />} />
         </Route>
+
         <Route path={LOGIN} element={<Auth />} />
         <Route path={ERROR_500} element={<Page500 />} />
         <Route path={OTHERS} element={<Page404 />} />

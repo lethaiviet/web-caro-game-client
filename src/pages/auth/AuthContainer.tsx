@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button, Stack, Image, Container, Row } from "react-bootstrap";
 import { clearAuthStates } from "./authSlice";
 import { ModalLoginForm, ModalRegisterForm } from "./components/ModalForm";
+import iconGame from "@assets/icon-game.png";
 
 type ModalType = "" | "login" | "register";
 
@@ -22,8 +23,8 @@ export default function LoginContainer() {
       <Container fluid>
         <Stack className="align-items-center justify-content-center min-vh-100">
           <Row>
-            <div style={{ height: "200px" }}>
-              <Image src="https://via.placeholder.com/200" alt="..." fluid />
+            <div style={{ height: "200px" }} className="mb-3">
+              <Image src={iconGame} alt="..." fluid />
             </div>
           </Row>
 

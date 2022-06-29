@@ -3,11 +3,9 @@ import { BASE_URL_SERVER } from "@/config/const";
 import ErrorHandlerService from "./error-handler.service";
 import StorageService, { COOKIES_ITEMS } from "./storage.service";
 
-export interface User {
+export interface LoginedUserData {
   _id: string;
   accessToken: string;
-  email: string;
-  password: string;
 }
 
 export interface AuthDataRequest {
@@ -51,13 +49,9 @@ class UserService {
   async login(data: AuthDataRequest): Promise<boolean> {
     try {
       const res = await axios.post(BASE_URL_SERVER.concat("/login"), data);
-      const { accessToken, email, password } = res.data?.data as User;
-      console.log({ accessToken, email, password });
-      StorageService.setCookies(COOKIES_ITEMS.CURRENT_USER, {
-        accessToken,
-        email,
-        password,
-      });
+      const cookiesData = res.data?.data as LoginedUserData;
+      console.log(cookiesData);
+      StorageService.setCookies(COOKIES_ITEMS.CURRENT_USER, cookiesData);
 
       return true;
     } catch (error: any) {
@@ -75,11 +69,14 @@ class UserService {
   }
 
   async checkAccessToken(): Promise<boolean> {
-    const currentUser = StorageService.getCookies(COOKIES_ITEMS.CURRENT_USER);
+    const currentUser: LoginedUserData = StorageService.getCookies(
+      COOKIES_ITEMS.CURRENT_USER
+    );
     if (!currentUser) return false;
 
     try {
-      await axios.post(BASE_URL_SERVER.concat("/check/token"), currentUser);
+      const accessToken = currentUser.accessToken;
+      await axios.post(BASE_URL_SERVER.concat("/check/token"), { accessToken });
       return true;
     } catch (error) {
       console.log(error);
