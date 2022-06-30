@@ -9,14 +9,28 @@ import {
   Button,
   Form,
 } from "react-bootstrap";
-import { useState, SyntheticEvent } from "react";
-import { useAppSelector } from "@/app/hook";
+import { useState, SyntheticEvent, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { selectUsers } from "./usersSlice";
 import { getAvatarTemplate } from "@/utils/utils";
-import { CameraFill } from "react-bootstrap-icons";
+import { CameraFill, ExclamationCircleFill } from "react-bootstrap-icons";
+import { updateAvatarCurrentUser, updateCurrentUser } from "./usersThunk";
+import { UpdateUserRequest } from "@/services/user.service";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 interface DetailProfileCardProps {
   onClick: () => void;
+}
+
+interface EditableDetailProfileCardProps {
+  setShow: (value: React.SetStateAction<CardType>) => void;
+}
+
+type CardType = "EditableCard" | "Card";
+
+interface Photo {
+  url: string;
+  file: File | null;
 }
 
 const DetailProfileCard = ({ onClick }: DetailProfileCardProps) => {
@@ -59,21 +73,31 @@ const DetailProfileCard = ({ onClick }: DetailProfileCardProps) => {
   );
 };
 
-interface EditableDetailProfileCardProps {
-  setShow: (value: React.SetStateAction<CardType>) => void;
+function getDataForm(e: SyntheticEvent): UpdateUserRequest {
+  const formData = new FormData(e.target as HTMLFormElement);
+  const formDataObj = Object.fromEntries(formData.entries());
+  return formDataObj as unknown as UpdateUserRequest;
 }
 
 const EditableDetailProfileCard = ({
   setShow,
 }: EditableDetailProfileCardProps) => {
+  const dispatch = useAppDispatch();
   const { currentUser } = useAppSelector(selectUsers);
 
   const [name, setName] = useState(currentUser.name);
   const [bio, setBio] = useState(currentUser.bio);
+  const [errorMsg, setErrorMsg] = useState<null | string>(null);
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-    setShow("Card");
+    const dataForm = getDataForm(e);
+    dispatch(updateCurrentUser(dataForm))
+      .then(unwrapResult)
+      .then(() => setShow("Card"))
+      .catch((error) => {
+        setErrorMsg(error.message);
+      });
   };
 
   return (
@@ -128,24 +152,36 @@ const EditableDetailProfileCard = ({
             </Row>
           </Col>
           <Button type="submit">Save</Button>
+          {errorMsg && (
+            <div className="text-danger mt-2">
+              <ExclamationCircleFill className="mx-2" />
+              {errorMsg}
+            </div>
+          )}
         </Form>
       </Card.Body>
     </Card>
   );
 };
 
-type CardType = "EditableCard" | "Card";
-interface Photo {
-  url: string;
-  file: File | null;
-}
-
 export const UserProfile = () => {
   const { currentUser } = useAppSelector(selectUsers);
+  const dispatch = useAppDispatch();
   const [avatar, setAvatar] = useState<Photo>({
-    url: currentUser.avatar,
+    url: "",
     file: null,
   });
+
+  useEffect(() => {
+    const url =
+      currentUser.avatar === ""
+        ? getAvatarTemplate(currentUser.name, 250)
+        : currentUser.avatar;
+
+    setAvatar({ ...avatar, url });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser]);
+
   const [show, setShow] = useState<CardType>("Card");
 
   const handleFileChange = (e: React.ChangeEvent) => {
@@ -153,6 +189,13 @@ export const UserProfile = () => {
     const file = target.files && target.files[0];
     const url = file ? URL.createObjectURL(file) : "";
     setAvatar({ url, file });
+  };
+
+  const handleUploadAvatar = () => {
+    if (avatar.file != null) {
+      dispatch(updateAvatarCurrentUser(avatar.file));
+      setAvatar({ ...avatar, file: null });
+    }
   };
 
   return (
@@ -163,11 +206,7 @@ export const UserProfile = () => {
             <Card.Body>
               <Stack className="align-items-center">
                 <Image
-                  src={
-                    currentUser.avatar === ""
-                      ? getAvatarTemplate(currentUser.name, 250)
-                      : avatar.url
-                  }
+                  src={avatar.url}
                   alt="user-avatar"
                   fluid
                   roundedCircle
@@ -184,10 +223,12 @@ export const UserProfile = () => {
                       onChange={handleFileChange}
                     />
                   </label>
-                  {avatar.file && <Button>Save</Button>}
+                  {avatar.file && (
+                    <Button onClick={handleUploadAvatar}>Save</Button>
+                  )}
                 </div>
 
-                <h4>User Name</h4>
+                <h4>{currentUser.name}</h4>
                 <h5>Level: {Math.floor(currentUser.exp / 100)}</h5>
               </Stack>
 

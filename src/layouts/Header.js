@@ -111,14 +111,9 @@ function Header() {
     const atUserProfile = location.pathname === USER_PROFILE;
 
     useEffect(() => {
-        const dispatchGetCurrentUser = async () => {
-            console.log("currentUser._id: " + currentUser._id)
-            if (currentUser._id === "") {
-                await dispatch(getCurrentUser());
-            }
+        if (currentUser._id === "") {
+            dispatch(getCurrentUser());
         }
-
-        dispatchGetCurrentUser();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

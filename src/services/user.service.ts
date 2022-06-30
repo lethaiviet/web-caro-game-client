@@ -19,6 +19,11 @@ export interface User {
   exp: number;
 }
 
+export interface UpdateUserRequest {
+  bio?: string;
+  name?: string;
+}
+
 export type InsensitiveUserData = Omit<
   User,
   "password" | "avatarLocalPath" | "accessToken"
@@ -140,6 +145,62 @@ class UserService {
     } catch (error) {
       const errorRes: MessageResponse = this.getErrorResponeOrDefault(error, {
         message: "Cannot get current User",
+      });
+      throw errorRes;
+    }
+  }
+
+  async updateUserById(
+    id: string,
+    data: UpdateUserRequest
+  ): Promise<InsensitiveUserData> {
+    try {
+      const res = await axios.put(`${BASE_URL_SERVER}/users/${id}`, data);
+      return res.data.data;
+    } catch (error) {
+      const errorRes: MessageResponse = this.getErrorResponeOrDefault(error, {
+        message: "Cannot update current User",
+      });
+      throw errorRes;
+    }
+  }
+
+  async updateCurrentUser(
+    data: UpdateUserRequest
+  ): Promise<InsensitiveUserData> {
+    try {
+      const currentUserCookies: LoginedUserData = StorageService.getCookies(
+        COOKIES_ITEMS.CURRENT_USER
+      );
+
+      return await this.updateUserById(currentUserCookies._id, data);
+    } catch (error) {
+      const errorRes: MessageResponse = this.getErrorResponeOrDefault(error, {
+        message: "Cannot update current User",
+      });
+      throw errorRes;
+    }
+  }
+
+  async updateAvatarCurrentUser(file: File): Promise<string> {
+    try {
+      const currentUserCookies: LoginedUserData = StorageService.getCookies(
+        COOKIES_ITEMS.CURRENT_USER
+      );
+      const id = currentUserCookies._id;
+
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("userId", id);
+
+      const res = await axios.post(
+        `${BASE_URL_SERVER}/users/upload-avatar`,
+        formData
+      );
+      return res.data.data.avatar;
+    } catch (error) {
+      const errorRes: MessageResponse = this.getErrorResponeOrDefault(error, {
+        message: "Cannot update current User",
       });
       throw errorRes;
     }

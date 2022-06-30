@@ -1,11 +1,16 @@
 import { RootState } from "@/app/store";
 import { InsensitiveUserData } from "@/services/user.service";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getCurrentUser } from "./usersThunk";
+import {
+  getCurrentUser,
+  updateAvatarCurrentUser,
+  updateCurrentUser,
+} from "./usersThunk";
 
 interface UsersState {
   currentUser: InsensitiveUserData;
   status: "idle" | "pending" | "error" | "success";
+  updateCurrentUserMsg: string | null;
   message: string | null;
 }
 
@@ -21,6 +26,7 @@ const initialState: UsersState = {
   },
   status: "idle",
   message: null,
+  updateCurrentUserMsg: null,
 };
 
 export const UsersSlice = createSlice({
@@ -53,6 +59,43 @@ export const UsersSlice = createSlice({
       state.currentUser = initialState.currentUser;
       state.message = action.payload?.message || null;
     });
+
+    //updateCurrentUser
+    builder.addCase(updateCurrentUser.pending, (state: UsersState) => {
+      state.status = "pending";
+      state.message = null;
+    });
+    builder.addCase(
+      updateCurrentUser.fulfilled,
+      (state: UsersState, action) => {
+        state.status = "success";
+        state.currentUser = action.payload;
+      }
+    );
+    builder.addCase(updateCurrentUser.rejected, (state: UsersState, action) => {
+      state.status = "error";
+      state.updateCurrentUserMsg = action.payload?.message || null;
+    });
+
+    //updateAvatarCurrentUser
+    builder.addCase(updateAvatarCurrentUser.pending, (state: UsersState) => {
+      state.status = "pending";
+      state.message = null;
+    });
+    builder.addCase(
+      updateAvatarCurrentUser.fulfilled,
+      (state: UsersState, action) => {
+        state.status = "success";
+        state.currentUser.avatar = action.payload;
+      }
+    );
+    builder.addCase(
+      updateAvatarCurrentUser.rejected,
+      (state: UsersState, action) => {
+        state.status = "error";
+        state.updateCurrentUserMsg = action.payload?.message || null;
+      }
+    );
   },
 });
 
