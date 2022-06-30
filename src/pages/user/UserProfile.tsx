@@ -9,10 +9,12 @@ import {
   Button,
   Form,
 } from "react-bootstrap";
-import userImag from "@/assets/icon-game.png";
 import { useState, SyntheticEvent } from "react";
 import { useAppSelector } from "@/app/hook";
 import { selectUsers } from "./usersSlice";
+import { getAvatarTemplate } from "@/utils/utils";
+import { CameraFill } from "react-bootstrap-icons";
+
 interface DetailProfileCardProps {
   onClick: () => void;
 }
@@ -133,10 +135,25 @@ const EditableDetailProfileCard = ({
 };
 
 type CardType = "EditableCard" | "Card";
+interface Photo {
+  url: string;
+  file: File | null;
+}
 
 export const UserProfile = () => {
   const { currentUser } = useAppSelector(selectUsers);
+  const [avatar, setAvatar] = useState<Photo>({
+    url: currentUser.avatar,
+    file: null,
+  });
   const [show, setShow] = useState<CardType>("Card");
+
+  const handleFileChange = (e: React.ChangeEvent) => {
+    const target = e.target as HTMLInputElement;
+    const file = target.files && target.files[0];
+    const url = file ? URL.createObjectURL(file) : "";
+    setAvatar({ url, file });
+  };
 
   return (
     <Container className="mt-3">
@@ -146,12 +163,30 @@ export const UserProfile = () => {
             <Card.Body>
               <Stack className="align-items-center">
                 <Image
-                  src={currentUser.avatar}
+                  src={
+                    currentUser.avatar === ""
+                      ? getAvatarTemplate(currentUser.name, 250)
+                      : avatar.url
+                  }
                   alt="user-avatar"
                   fluid
                   roundedCircle
                   width="250"
                 ></Image>
+                <div className="mt-3">
+                  <label>
+                    <CameraFill size={20} />
+                    <input
+                      id="upload-avatar"
+                      type="file"
+                      style={{ width: "10px" }}
+                      accept="image/png, image/jpeg, image/jpg"
+                      onChange={handleFileChange}
+                    />
+                  </label>
+                  {avatar.file && <Button>Save</Button>}
+                </div>
+
                 <h4>User Name</h4>
                 <h5>Level: {Math.floor(currentUser.exp / 100)}</h5>
               </Stack>

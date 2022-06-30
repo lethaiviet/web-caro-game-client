@@ -7,3 +7,7 @@
 @import "../pages/chat/components/styles";
 
 @import "../layouts/styles";
+
+#upload-avatar::-webkit-file-upload-button {
+  visibility: hidden;
+}
