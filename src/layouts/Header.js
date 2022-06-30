@@ -15,6 +15,7 @@ import { selectUsers } from "@/pages/user/usersSlice";
 import { useEffect } from "react";
 import { getCurrentUser } from "@/pages/user/usersThunk";
 import { getAvatarTemplate } from "@/utils/utils"
+import { ChatDotsFill, GearWide, PersonCircle, BoxArrowRight } from "react-bootstrap-icons"
 
 
 function DropdownToggleTitle() {
@@ -33,36 +34,18 @@ function DropdownToggleTitle() {
     );
 }
 
-function IconSetting() {
-    return (
-        <>
-            <Image
-                style={{ width: "1rem" }}
-                src="https://via.placeholder.com/200?text=G"
-                alt="..."
-                fluid
-                className="me-2"
-            />
-        </>
-    );
-}
-
 function MessageIcon() {
     return (
         <>
             <div className="d-inline-flex position-relative me-2">
-                <Image
-                    style={{ width: "30px", height: "30px" }}
-                    src="https://via.placeholder.com/200?text=G"
-                    alt="..."
-                    fluid
-                />
+                <ChatDotsFill size={18} color="blue" />
                 <Badge
                     className="position-absolute top-0 start-100 translate-middle p-1 rounded-circle"
                     pill
                     bg="danger"
+                    style={{ lineHeight: 0.7 }}
                 >
-                    9+<span className="visually-hidden">unread messages</span>
+                    5<span className="visually-hidden">unread messages</span>
                 </Badge>
             </div>
         </>
@@ -84,16 +67,16 @@ function NavBarCollapse() {
                 <Nav>
                     <NavDropdown id="nav-dropdown" title={<DropdownToggleTitle />}>
                         <NavDropdown.Item href="#action/3.1">
-                            <IconSetting />
+                            <GearWide className="me-2" size={18} />
                             Setting
                         </NavDropdown.Item>
                         <NavDropdown.Item as={Link} to={USER_PROFILE}>
-                            <IconSetting />
+                            <PersonCircle className="me-2" size={18} />
                             Profile
                         </NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item href="#action/3.4">
-                            <IconSetting />
+                            <BoxArrowRight className="me-2" size={18} />
                             Logout
                         </NavDropdown.Item>
                     </NavDropdown>
