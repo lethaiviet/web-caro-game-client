@@ -10,6 +10,10 @@ import { Outlet, Link } from "react-router-dom";
 import iconGame from "@assets/mini-icon-game.png";
 import { ROOT, USER_PROFILE } from "@/navigation/const"
 import { useLocation } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from "@/app/hook";
+import { selectUsers } from "@/pages/user/usersSlice";
+import { useEffect } from "react";
+import { getCurrentUser } from "@/pages/user/usersThunk";
 
 function DropdownToggleTitle() {
     return (
@@ -99,7 +103,20 @@ function NavBarCollapse() {
 
 function Header() {
     const location = useLocation();
+    const { currentUser } = useAppSelector(selectUsers);
+    const dispatch = useAppDispatch();
     const atUserProfile = location.pathname === USER_PROFILE;
+
+    useEffect(() => {
+        const dispatchGetCurrentUser = async () => {
+            if (!currentUser._id) {
+                await dispatch(getCurrentUser());
+            }
+        }
+
+        dispatchGetCurrentUser();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return (
         <>

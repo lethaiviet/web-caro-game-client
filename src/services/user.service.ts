@@ -5,7 +5,24 @@ import StorageService, {
   COOKIES_ITEMS,
   SECTION_ITEMS,
 } from "./storage.service";
-import storageService from "./storage.service";
+
+export interface User {
+  _id: string;
+  email: string;
+  password: string;
+  status: string;
+  accessToken: string;
+  bio: string;
+  name: string;
+  avatar: string;
+  avatarLocalPath: string;
+  exp: number;
+}
+
+export type InsensitiveUserData = Omit<
+  User,
+  "password" | "avatarLocalPath" | "accessToken"
+>;
 
 export interface LoginedUserData {
   _id: string;
@@ -22,14 +39,14 @@ export enum Status {
   success,
 }
 
-export interface AuthDataResponse {
+export interface MessageResponse {
   message: string;
 }
 
 class UserService {
-  constructor(private ehs = new ErrorHandlerService<AuthDataResponse>()) {}
+  constructor(private ehs = new ErrorHandlerService<MessageResponse>()) {}
 
-  async signup(data: AuthDataRequest): Promise<AuthDataResponse> {
+  async signup(data: AuthDataRequest): Promise<MessageResponse> {
     try {
       await axios.post(BASE_URL_SERVER.concat("/signup"), data);
       return {
@@ -37,11 +54,11 @@ class UserService {
           "You signup successfully. Please check email to active your account.",
       };
     } catch (error: any) {
-      const defaultRes: AuthDataResponse = {
+      const defaultRes: MessageResponse = {
         message: "You cannot signup. Please contact with admin.",
       };
 
-      const errorRes: AuthDataResponse = this.getErrorResponeOrDefault(
+      const errorRes: MessageResponse = this.getErrorResponeOrDefault(
         error,
         defaultRes
       );
@@ -59,11 +76,11 @@ class UserService {
 
       return true;
     } catch (error: any) {
-      const defaultRes: AuthDataResponse = {
+      const defaultRes: MessageResponse = {
         message: "You cannot login. Please contact with admin.",
       };
 
-      const errorRes: AuthDataResponse = this.getErrorResponeOrDefault(
+      const errorRes: MessageResponse = this.getErrorResponeOrDefault(
         error,
         defaultRes
       );
@@ -93,12 +110,39 @@ class UserService {
 
   private getErrorResponeOrDefault(
     error: any,
-    defaultVal: AuthDataResponse
-  ): AuthDataResponse {
+    defaultVal: MessageResponse
+  ): MessageResponse {
     this.ehs.handleErrorMessage(error);
 
-    const errorResponse: AuthDataResponse = this.ehs.errorMsg || defaultVal;
+    const errorResponse: MessageResponse = this.ehs.errorMsg || defaultVal;
     return errorResponse;
+  }
+
+  async getUserById(id: string): Promise<InsensitiveUserData> {
+    try {
+      const userDataRes = await axios.get(`${BASE_URL_SERVER}/users/${id}`);
+      return userDataRes.data.data as InsensitiveUserData;
+    } catch (error) {
+      const errorRes: MessageResponse = this.getErrorResponeOrDefault(error, {
+        message: "Cannot get User by Id",
+      });
+      throw errorRes;
+    }
+  }
+
+  async getCurrentUser(): Promise<InsensitiveUserData> {
+    try {
+      const currentUserCookies: LoginedUserData = StorageService.getCookies(
+        COOKIES_ITEMS.CURRENT_USER
+      );
+
+      return await this.getUserById(currentUserCookies._id);
+    } catch (error) {
+      const errorRes: MessageResponse = this.getErrorResponeOrDefault(error, {
+        message: "Cannot get current User",
+      });
+      throw errorRes;
+    }
   }
 }
 
