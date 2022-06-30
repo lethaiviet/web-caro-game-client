@@ -11,11 +11,15 @@ import {
 } from "react-bootstrap";
 import userImag from "@/assets/icon-game.png";
 import { useState, SyntheticEvent } from "react";
+import { useAppSelector } from "@/app/hook";
+import { selectUsers } from "./usersSlice";
 interface DetailProfileCardProps {
   onClick: () => void;
 }
 
 const DetailProfileCard = ({ onClick }: DetailProfileCardProps) => {
+  const { currentUser } = useAppSelector(selectUsers);
+
   return (
     <Card>
       <Card.Body>
@@ -25,7 +29,7 @@ const DetailProfileCard = ({ onClick }: DetailProfileCardProps) => {
               <h6>Email</h6>
             </Col>
             <Col md={9}>
-              <div className="text-secondary">yellowCat.@gmail.com</div>
+              <div className="text-secondary">{currentUser.email}</div>
             </Col>
           </Row>
 
@@ -34,7 +38,7 @@ const DetailProfileCard = ({ onClick }: DetailProfileCardProps) => {
               <h6>Name</h6>
             </Col>
             <Col md={9}>
-              <div className="text-secondary">yellowCat</div>
+              <div className="text-secondary">{currentUser.name}</div>
             </Col>
           </Row>
 
@@ -43,9 +47,7 @@ const DetailProfileCard = ({ onClick }: DetailProfileCardProps) => {
               <h6>Bio</h6>
             </Col>
             <Col md={9}>
-              <div className="text-secondary">
-                I'm a big cat with yellow color
-              </div>
+              <div className="text-secondary">{currentUser.bio}</div>
             </Col>
           </Row>
         </Col>
@@ -62,8 +64,10 @@ interface EditableDetailProfileCardProps {
 const EditableDetailProfileCard = ({
   setShow,
 }: EditableDetailProfileCardProps) => {
-  const [name, setName] = useState("");
-  const [bio, setBio] = useState("");
+  const { currentUser } = useAppSelector(selectUsers);
+
+  const [name, setName] = useState(currentUser.name);
+  const [bio, setBio] = useState(currentUser.bio);
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -83,7 +87,7 @@ const EditableDetailProfileCard = ({
                 <Form.Control
                   type="text"
                   required
-                  value="yellowCat.@gmail.com"
+                  value={currentUser.email}
                   disabled
                 />
               </Col>
@@ -131,6 +135,7 @@ const EditableDetailProfileCard = ({
 type CardType = "EditableCard" | "Card";
 
 export const UserProfile = () => {
+  const { currentUser } = useAppSelector(selectUsers);
   const [show, setShow] = useState<CardType>("Card");
 
   return (
@@ -141,19 +146,21 @@ export const UserProfile = () => {
             <Card.Body>
               <Stack className="align-items-center">
                 <Image
-                  src={userImag}
+                  src={currentUser.avatar}
                   alt="user-avatar"
                   fluid
                   roundedCircle
                   width="250"
                 ></Image>
                 <h4>User Name</h4>
+                <h5>Level: {Math.floor(currentUser.exp / 100)}</h5>
               </Stack>
+
               <ProgressBar
                 variant="success"
-                now={0}
+                now={currentUser.exp % 100}
                 min={10}
-                label={`0%`}
+                label={`${currentUser.exp % 100}%`}
                 key={1}
               />
             </Card.Body>

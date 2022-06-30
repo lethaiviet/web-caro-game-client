@@ -14,18 +14,21 @@ import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { selectUsers } from "@/pages/user/usersSlice";
 import { useEffect } from "react";
 import { getCurrentUser } from "@/pages/user/usersThunk";
+import { getAvatarTemplate } from "@/utils/utils"
+
 
 function DropdownToggleTitle() {
+    const { currentUser } = useAppSelector(selectUsers);
     return (
         <>
             <Image
                 style={{ width: "2.3rem" }}
-                src="https://via.placeholder.com/200?text=G"
-                alt="..."
+                src={currentUser.avatar === "" ? getAvatarTemplate(currentUser.name, 50) : currentUser.avatar}
+                alt={currentUser.name}
                 fluid
                 roundedCircle
             />
-            <span className="ms-2">YellowCat</span>
+            <span className="ms-2">{currentUser.name}</span>
         </>
     );
 }
@@ -109,7 +112,8 @@ function Header() {
 
     useEffect(() => {
         const dispatchGetCurrentUser = async () => {
-            if (!currentUser._id) {
+            console.log("currentUser._id: " + currentUser._id)
+            if (currentUser._id === "") {
                 await dispatch(getCurrentUser());
             }
         }
