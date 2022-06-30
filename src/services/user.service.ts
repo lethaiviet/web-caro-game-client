@@ -1,7 +1,11 @@
 import axios from "axios";
 import { BASE_URL_SERVER } from "@/config/const";
 import ErrorHandlerService from "./error-handler.service";
-import StorageService, { COOKIES_ITEMS } from "./storage.service";
+import StorageService, {
+  COOKIES_ITEMS,
+  SECTION_ITEMS,
+} from "./storage.service";
+import storageService from "./storage.service";
 
 export interface LoginedUserData {
   _id: string;
@@ -50,8 +54,8 @@ class UserService {
     try {
       const res = await axios.post(BASE_URL_SERVER.concat("/login"), data);
       const cookiesData = res.data?.data as LoginedUserData;
-      console.log(cookiesData);
       StorageService.setCookies(COOKIES_ITEMS.CURRENT_USER, cookiesData);
+      StorageService.setSectionStorageItem(SECTION_ITEMS.IS_AUTH, "true");
 
       return true;
     } catch (error: any) {
@@ -72,11 +76,14 @@ class UserService {
     const currentUser: LoginedUserData = StorageService.getCookies(
       COOKIES_ITEMS.CURRENT_USER
     );
+
     if (!currentUser) return false;
 
     try {
       const accessToken = currentUser.accessToken;
       await axios.post(BASE_URL_SERVER.concat("/check/token"), { accessToken });
+
+      StorageService.setSectionStorageItem(SECTION_ITEMS.IS_AUTH, "true");
       return true;
     } catch (error) {
       console.log(error);
