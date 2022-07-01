@@ -85,6 +85,21 @@ class UserService {
     }
   }
 
+  public async logout(): Promise<boolean> {
+    try {
+      await axiosInstance.post("/logout");
+      StorageService.setCookies(COOKIES_ITEMS.CURRENT_USER, "");
+      StorageService.setSectionStorageItem(SECTION_ITEMS.IS_AUTH, "false");
+      return true;
+    } catch (error: any) {
+      const errorMsg: MessageResponse = this.getErrorResponeOrDefault(error, {
+        message: "You cannot logout. Please contact with admin.",
+      });
+
+      throw errorMsg;
+    }
+  }
+
   public async checkAccessToken(): Promise<boolean> {
     const currentUser: LoginedUserData = StorageService.getCookies(
       COOKIES_ITEMS.CURRENT_USER

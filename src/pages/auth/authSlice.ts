@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "@storeRedux";
-import { signup, login, checkAccessToken } from "./authThunk";
+import { signup, login, checkAccessToken, logout } from "./authThunk";
 
 export interface AuthState {
   username: string;
@@ -60,6 +60,20 @@ export const AuthSlice = createSlice({
       state.status = "error";
       state.message = action.payload?.message || null;
       state.authorized = false;
+    });
+
+    //logout
+    builder.addCase(logout.pending, (state: AuthState) => {
+      state.status = "pending";
+      state.message = null;
+    });
+    builder.addCase(logout.fulfilled, (state: AuthState, action) => {
+      state.status = "success";
+      state = initialState;
+    });
+    builder.addCase(logout.rejected, (state: AuthState, action) => {
+      state.status = "error";
+      state.message = action.payload?.message || null;
     });
 
     //check access token

@@ -28,6 +28,17 @@ const login = createAsyncThunk<
   }
 });
 
+const logout = createAsyncThunk<boolean, any, { rejectValue: MessageResponse }>(
+  "auth/logout",
+  async (_, thunkApi) => {
+    try {
+      return await UserService.logout();
+    } catch (error) {
+      return thunkApi.rejectWithValue(error as MessageResponse);
+    }
+  }
+);
+
 const checkAccessToken = createAsyncThunk<boolean>(
   "auth/check-access-token",
   async () => {
@@ -35,4 +46,4 @@ const checkAccessToken = createAsyncThunk<boolean>(
   }
 );
 
-export { signup, login, checkAccessToken };
+export { signup, login, logout, checkAccessToken };

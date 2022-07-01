@@ -6,9 +6,9 @@ import {
     Image,
     Badge,
 } from "react-bootstrap";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import iconGame from "@assets/mini-icon-game.png";
-import { ROOT, USER_PROFILE } from "@/navigation/const"
+import { LOGIN, ROOT, USER_PROFILE } from "@/navigation/const"
 import { useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { selectUsers } from "@/pages/user/usersSlice";
@@ -16,6 +16,8 @@ import { useEffect } from "react";
 import { getCurrentUser } from "@/pages/user/usersThunk";
 import { getAvatarTemplate } from "@/utils/utils"
 import { ChatDotsFill, GearWide, PersonCircle, BoxArrowRight } from "react-bootstrap-icons"
+import { logout } from "@/pages/auth/authThunk";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 
 function DropdownToggleTitle() {
@@ -53,6 +55,15 @@ function MessageIcon() {
 }
 
 function NavBarCollapse() {
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        dispatch(logout()).then(unwrapResult)
+            .then(() => navigate(LOGIN))
+            .catch(err => console.log(err))
+    }
+
     return (
         <>
             <Navbar.Toggle aria-controls="navbar-user-profile" />
@@ -75,7 +86,7 @@ function NavBarCollapse() {
                             Profile
                         </NavDropdown.Item>
                         <NavDropdown.Divider />
-                        <NavDropdown.Item href="#action/3.4">
+                        <NavDropdown.Item onClick={handleLogout}>
                             <BoxArrowRight className="me-2" size={18} />
                             Logout
                         </NavDropdown.Item>
