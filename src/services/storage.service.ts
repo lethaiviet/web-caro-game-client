@@ -1,6 +1,7 @@
 import Cookies from "universal-cookie/es6";
 export enum COOKIES_ITEMS {
   CURRENT_USER = "currentUser",
+  AUTHORIZATION = "Authorization",
 }
 
 export enum SECTION_ITEMS {

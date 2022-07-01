@@ -5,6 +5,7 @@ import StorageService, {
   COOKIES_ITEMS,
   SECTION_ITEMS,
 } from "./storage.service";
+import { axiosInstance, bodyResponse } from "../config/axioConfig";
 
 export interface User {
   _id: string;
@@ -51,50 +52,40 @@ export interface MessageResponse {
 class UserService {
   constructor(private ehs = new ErrorHandlerService<MessageResponse>()) {}
 
-  async signup(data: AuthDataRequest): Promise<MessageResponse> {
+  public async signup(data: AuthDataRequest): Promise<MessageResponse> {
     try {
-      await axios.post(BASE_URL_SERVER.concat("/signup"), data);
+      await axiosInstance.post("/signup", data);
       return {
         message:
           "You signup successfully. Please check email to active your account.",
       };
     } catch (error: any) {
-      const defaultRes: MessageResponse = {
+      const errorMsg: MessageResponse = this.getErrorResponeOrDefault(error, {
         message: "You cannot signup. Please contact with admin.",
-      };
+      });
 
-      const errorRes: MessageResponse = this.getErrorResponeOrDefault(
-        error,
-        defaultRes
-      );
-
-      throw errorRes;
+      throw errorMsg;
     }
   }
 
-  async login(data: AuthDataRequest): Promise<boolean> {
+  public async login(data: AuthDataRequest): Promise<boolean> {
     try {
-      const res = await axios.post(BASE_URL_SERVER.concat("/login"), data);
-      const cookiesData = res.data?.data as LoginedUserData;
-      StorageService.setCookies(COOKIES_ITEMS.CURRENT_USER, cookiesData);
-      StorageService.setSectionStorageItem(SECTION_ITEMS.IS_AUTH, "true");
+      const res = await axiosInstance.post("/login", data);
+      const currentUserData = bodyResponse(res).data as LoginedUserData;
 
+      StorageService.setCookies(COOKIES_ITEMS.CURRENT_USER, currentUserData);
+      StorageService.setSectionStorageItem(SECTION_ITEMS.IS_AUTH, "true");
       return true;
     } catch (error: any) {
-      const defaultRes: MessageResponse = {
+      const errorMsg: MessageResponse = this.getErrorResponeOrDefault(error, {
         message: "You cannot login. Please contact with admin.",
-      };
+      });
 
-      const errorRes: MessageResponse = this.getErrorResponeOrDefault(
-        error,
-        defaultRes
-      );
-
-      throw errorRes;
+      throw errorMsg;
     }
   }
 
-  async checkAccessToken(): Promise<boolean> {
+  public async checkAccessToken(): Promise<boolean> {
     const currentUser: LoginedUserData = StorageService.getCookies(
       COOKIES_ITEMS.CURRENT_USER
     );
@@ -103,8 +94,7 @@ class UserService {
 
     try {
       const accessToken = currentUser.accessToken;
-      await axios.post(BASE_URL_SERVER.concat("/check/token"), { accessToken });
-
+      await axiosInstance.post("/check/token", { accessToken });
       StorageService.setSectionStorageItem(SECTION_ITEMS.IS_AUTH, "true");
       return true;
     } catch (error) {
@@ -123,19 +113,19 @@ class UserService {
     return errorResponse;
   }
 
-  async getUserById(id: string): Promise<InsensitiveUserData> {
+  public async getUserById(id: string): Promise<InsensitiveUserData> {
     try {
-      const userDataRes = await axios.get(`${BASE_URL_SERVER}/users/${id}`);
-      return userDataRes.data.data as InsensitiveUserData;
+      const res = await axiosInstance.get(`/users/${id}`);
+      return bodyResponse(res).data as InsensitiveUserData;
     } catch (error) {
-      const errorRes: MessageResponse = this.getErrorResponeOrDefault(error, {
+      const errorMsg: MessageResponse = this.getErrorResponeOrDefault(error, {
         message: "Cannot get User by Id",
       });
-      throw errorRes;
+      throw errorMsg;
     }
   }
 
-  async getCurrentUser(): Promise<InsensitiveUserData> {
+  public async getCurrentUser(): Promise<InsensitiveUserData> {
     try {
       const currentUserCookies: LoginedUserData = StorageService.getCookies(
         COOKIES_ITEMS.CURRENT_USER
@@ -143,29 +133,26 @@ class UserService {
 
       return await this.getUserById(currentUserCookies._id);
     } catch (error) {
-      const errorRes: MessageResponse = this.getErrorResponeOrDefault(error, {
-        message: "Cannot get current User",
-      });
-      throw errorRes;
+      throw error;
     }
   }
 
-  async updateUserById(
+  public async updateUserById(
     id: string,
     data: UpdateUserRequest
   ): Promise<InsensitiveUserData> {
     try {
-      const res = await axios.put(`${BASE_URL_SERVER}/users/${id}`, data);
-      return res.data.data;
+      const res = await axiosInstance.put(`/users/${id}`, data);
+      return bodyResponse(res).data;
     } catch (error) {
-      const errorRes: MessageResponse = this.getErrorResponeOrDefault(error, {
+      const errorMsg: MessageResponse = this.getErrorResponeOrDefault(error, {
         message: "Cannot update current User",
       });
-      throw errorRes;
+      throw errorMsg;
     }
   }
 
-  async updateCurrentUser(
+  public async updateCurrentUser(
     data: UpdateUserRequest
   ): Promise<InsensitiveUserData> {
     try {
@@ -175,14 +162,11 @@ class UserService {
 
       return await this.updateUserById(currentUserCookies._id, data);
     } catch (error) {
-      const errorRes: MessageResponse = this.getErrorResponeOrDefault(error, {
-        message: "Cannot update current User",
-      });
-      throw errorRes;
+      throw error;
     }
   }
 
-  async updateAvatarCurrentUser(file: File): Promise<string> {
+  public async updateAvatarCurrentUser(file: File): Promise<string> {
     try {
       const currentUserCookies: LoginedUserData = StorageService.getCookies(
         COOKIES_ITEMS.CURRENT_USER
@@ -193,16 +177,13 @@ class UserService {
       formData.append("image", file);
       formData.append("userId", id);
 
-      const res = await axios.post(
-        `${BASE_URL_SERVER}/users/upload-avatar`,
-        formData
-      );
-      return res.data.data.avatar;
+      const res = await axiosInstance.post("/users/upload-avatar", formData);
+      return bodyResponse(res).data.avatar;
     } catch (error) {
-      const errorRes: MessageResponse = this.getErrorResponeOrDefault(error, {
+      const errorMsg: MessageResponse = this.getErrorResponeOrDefault(error, {
         message: "Cannot update current User",
       });
-      throw errorRes;
+      throw errorMsg;
     }
   }
 }
