@@ -18,7 +18,6 @@ import { getAvatarTemplate } from "@/utils/utils"
 import { ChatDotsFill, GearWide, PersonCircle, BoxArrowRight } from "react-bootstrap-icons"
 import { logout } from "@/pages/auth/authThunk";
 import { unwrapResult } from "@reduxjs/toolkit";
-import chatService from "@/services/chat.service";
 import { actionChat } from "@/pages/chat/chatSlice";
 
 

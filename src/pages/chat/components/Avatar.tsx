@@ -3,14 +3,15 @@ import { CSSProperties } from "react";
 
 export interface AvatarProps {
   style?: CSSProperties;
+  src: string;
 }
 
-export default function Avatar({ style }: AvatarProps) {
+export default function Avatar({ style, src }: AvatarProps) {
   return (
     <Image
       style={{ ...style, width: "3rem" }}
-      src="https://via.placeholder.com/200?text=G"
-      alt="..."
+      src={src}
+      alt={src}
       fluid
       roundedCircle
     />
