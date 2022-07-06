@@ -8,7 +8,7 @@ import {
 } from "react-bootstrap";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import iconGame from "@assets/mini-icon-game.png";
-import { LOGIN, ROOT, USER_PROFILE } from "@/navigation/const"
+import { CHAT, LOGIN, ROOT, USER_PROFILE } from "@/navigation/const"
 import { useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { selectUsers } from "@/pages/user/usersSlice";
@@ -18,6 +18,8 @@ import { getAvatarTemplate } from "@/utils/utils"
 import { ChatDotsFill, GearWide, PersonCircle, BoxArrowRight } from "react-bootstrap-icons"
 import { logout } from "@/pages/auth/authThunk";
 import { unwrapResult } from "@reduxjs/toolkit";
+import chatService from "@/services/chat.service";
+import { actionChat } from "@/pages/chat/chatSlice";
 
 
 function DropdownToggleTitle() {
@@ -37,9 +39,11 @@ function DropdownToggleTitle() {
 }
 
 function MessageIcon() {
+    const navigate = useNavigate();
+
     return (
         <>
-            <div className="d-inline-flex position-relative me-2">
+            <div className="d-inline-flex position-relative me-2" onClick={() => navigate(CHAT)}>
                 <ChatDotsFill size={18} color="blue" />
                 <Badge
                     className="position-absolute top-0 start-100 translate-middle p-1 rounded-circle"
@@ -106,7 +110,9 @@ function Header() {
 
     useEffect(() => {
         if (currentUser._id === "") {
-            dispatch(getCurrentUser());
+            dispatch(getCurrentUser()).then(
+                dispatch(actionChat.startConnection())
+            )
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
