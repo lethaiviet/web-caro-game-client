@@ -14,13 +14,7 @@ export default function ChatContainer() {
 
   return (
     <div className="d-flex flex-wrap">
-      {usersStates ? (
-        <SideBarChat data={usersStates} />
-      ) : (
-        <Container className="d-flex justify-content-center align-items-center vh-100">
-          <Spinner animation="grow"></Spinner>
-        </Container>
-      )}
+      {usersStates && <SideBarChat data={usersStates} />}
       <ChatBox></ChatBox>
     </div>
   );

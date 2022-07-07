@@ -19,6 +19,12 @@
   height: $scoll-bar-chat-height;
 }
 
+.scoll-bar-chat .contact:hover,
+.scoll-bar-chat .contact.selected {
+  background-color: #fafafa;
+  transition: all 0.1s ease;
+}
+
 .message-to-send {
   width: 100%;
   border-radius: 10rem;

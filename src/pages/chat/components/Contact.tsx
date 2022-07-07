@@ -5,11 +5,16 @@ import Avatar from "./Avatar";
 
 interface ContactProps {
   data: UserStates;
+  onClick?: () => void;
+  selected?: boolean;
 }
 
-export default function Contact({ data }: ContactProps) {
+export default function Contact({ data, onClick, selected }: ContactProps) {
   return (
-    <div className="w-100">
+    <div
+      className={"contact w-100" + (selected ? " selected" : "")}
+      onClick={onClick}
+    >
       <Stack
         direction="horizontal"
         className="border-start border-bottom border-end P-20"
