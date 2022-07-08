@@ -1,6 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { useEffect } from "react";
-import { Container, Spinner } from "react-bootstrap";
 import { actionChat, selectChat } from "./chatSlice";
 import { ChatBox, SideBarChat } from "./components";
 
@@ -10,6 +9,7 @@ export default function ChatContainer() {
 
   useEffect(() => {
     if (isConnected) dispatch(actionChat.requestGetAllUsersState());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected]);
 
   return (

@@ -5,15 +5,18 @@ import React, { memo, useEffect, useState } from "react";
 
 import Contact from "./Contact";
 import { UserStates } from "@/interfaces/users.interface";
+import { useAppDispatch, useAppSelector } from "@/app/hook";
+import { actionChat, selectChat } from "../chatSlice";
 
 interface SideBarChatProps {
   data: UserStates[];
 }
 
 const SideBarChat = ({ data }: SideBarChatProps) => {
+  const dispatch = useAppDispatch();
+  const { selectedChatter } = useAppSelector(selectChat);
   const [wordSearch, setWordSearch] = useState("");
   const [filteredData, setFilteredData] = useState<UserStates[]>(data);
-  const [selectedChaterId, setSelectedChaterId] = useState("");
 
   const handleSearch = (e: React.ChangeEvent) => {
     const target = e.target as HTMLInputElement;
@@ -32,9 +35,11 @@ const SideBarChat = ({ data }: SideBarChatProps) => {
           <Contact
             key={x._id}
             data={x}
-            selected={selectedChaterId === x._id.toString()}
+            selected={selectedChatter._id.toString() === x._id.toString()}
             onClick={() => {
-              setSelectedChaterId(x._id.toString());
+              dispatch(
+                actionChat.requestGetAllMessagesInRoom(x._id.toString())
+              );
             }}
           />
         ))}
