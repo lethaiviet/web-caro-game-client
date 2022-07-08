@@ -1,7 +1,7 @@
 import { useAppSelector } from "@/app/hook";
 import { selectUsers } from "@/pages/user/usersSlice";
 import { formatTimeChat, sortMessagesByTime } from "@/utils/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Stack } from "react-bootstrap";
 import Scrollbars from "react-custom-scrollbars-2";
 import { selectChat } from "../chatSlice";
@@ -36,6 +36,7 @@ export default function ChatHistory() {
   const { messagesCurrentChater, selectedChatter } = useAppSelector(selectChat);
   const { currentUser } = useAppSelector(selectUsers);
   const [sortedMessages, setSortedMessages] = useState(messagesCurrentChater);
+
   useEffect(() => {
     console.log(
       "ChatHistory setSortedMessages(sortMessagesByTime(messagesCurrentChater));"
@@ -46,7 +47,11 @@ export default function ChatHistory() {
 
   return (
     <div className="w-100 border-bottom chat-history">
-      <Scrollbars>
+      <Scrollbars
+        ref={(scrollbar) => {
+          scrollbar?.scrollToBottom();
+        }}
+      >
         <Stack>
           {sortedMessages.map((message) => {
             const createAt = formatTimeChat(message.created_at);
