@@ -1,7 +1,13 @@
 import { useAppSelector } from "@/app/hook";
 import { selectUsers } from "@/pages/user/usersSlice";
 import { formatTimeChat, sortMessagesByTime } from "@/utils/utils";
-import { createRef, useEffect, useRef, useState } from "react";
+import {
+  createRef,
+  useEffect,
+  forwardRef,
+  useState,
+  ForwardedRef,
+} from "react";
 import { Stack } from "react-bootstrap";
 import Scrollbars from "react-custom-scrollbars-2";
 import { selectChat } from "../chatSlice";
@@ -33,6 +39,38 @@ function MyMessageHistory({ name, createAt, content }: MessageHistoryProps) {
   );
 }
 
+const OtherMessageHistoryWithAnimation = forwardRef<MessageHistoryProps, any>(
+  (props: MessageHistoryProps, ref: ForwardedRef<any>) => {
+    return (
+      <CSSTransition in={true} classNames="item" timeout={1000} nodeRef={ref}>
+        <div ref={ref}>
+          <OtherMessageHistory
+            name={props.name}
+            content={props.content}
+            createAt={props.createAt}
+          />
+        </div>
+      </CSSTransition>
+    );
+  }
+);
+
+const MyMessageHistoryWithAnimation = forwardRef<MessageHistoryProps, any>(
+  (props: MessageHistoryProps, ref: ForwardedRef<any>) => {
+    return (
+      <CSSTransition in={true} classNames="item" timeout={1000} nodeRef={ref}>
+        <div ref={ref}>
+          <MyMessageHistory
+            name={props.name}
+            content={props.content}
+            createAt={props.createAt}
+          />
+        </div>
+      </CSSTransition>
+    );
+  }
+);
+
 export default function ChatHistory() {
   const { messagesCurrentChater, selectedChatter } = useAppSelector(selectChat);
   const { currentUser } = useAppSelector(selectUsers);
@@ -56,39 +94,23 @@ export default function ChatHistory() {
               const nodeRef = createRef<any>();
               if (message.senderId.toString() === currentUser._id.toString()) {
                 return (
-                  <CSSTransition
-                    in={true}
+                  <MyMessageHistoryWithAnimation
                     key={message._id.toString()}
-                    timeout={1000}
-                    classNames="item"
-                    nodeRef={nodeRef}
-                  >
-                    <div ref={nodeRef}>
-                      <MyMessageHistory
-                        name={currentUser.name}
-                        content={message.content}
-                        createAt={createAt}
-                      />
-                    </div>
-                  </CSSTransition>
+                    ref={nodeRef}
+                    name={currentUser.name}
+                    content={message.content}
+                    createAt={createAt}
+                  />
                 );
               } else {
                 return (
-                  <CSSTransition
-                    in={true}
+                  <OtherMessageHistoryWithAnimation
                     key={message._id.toString()}
-                    timeout={1000}
-                    classNames="item"
-                    nodeRef={nodeRef}
-                  >
-                    <div ref={nodeRef}>
-                      <OtherMessageHistory
-                        name={selectedChatter.name}
-                        content={message.content}
-                        createAt={createAt}
-                      />
-                    </div>
-                  </CSSTransition>
+                    ref={nodeRef}
+                    name={selectedChatter.name}
+                    content={message.content}
+                    createAt={createAt}
+                  />
                 );
               }
             })}
