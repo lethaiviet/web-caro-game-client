@@ -1,10 +1,11 @@
 import { useAppSelector } from "@/app/hook";
 import { selectUsers } from "@/pages/user/usersSlice";
 import { formatTimeChat, sortMessagesByTime } from "@/utils/utils";
-import { useEffect, useRef, useState } from "react";
+import { createRef, useEffect, useRef, useState } from "react";
 import { Stack } from "react-bootstrap";
 import Scrollbars from "react-custom-scrollbars-2";
 import { selectChat } from "../chatSlice";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 interface MessageHistoryProps {
   name: string;
@@ -38,10 +39,6 @@ export default function ChatHistory() {
   const [sortedMessages, setSortedMessages] = useState(messagesCurrentChater);
 
   useEffect(() => {
-    console.log(
-      "ChatHistory setSortedMessages(sortMessagesByTime(messagesCurrentChater));"
-    );
-    console.log(messagesCurrentChater);
     setSortedMessages(sortMessagesByTime(messagesCurrentChater));
   }, [messagesCurrentChater]);
 
@@ -52,28 +49,51 @@ export default function ChatHistory() {
           scrollbar?.scrollToBottom();
         }}
       >
-        <Stack>
-          {sortedMessages.map((message) => {
-            const createAt = formatTimeChat(message.created_at);
-            if (message.senderId.toString() === currentUser._id.toString()) {
-              return (
-                <MyMessageHistory
-                  name={currentUser.name}
-                  content={message.content}
-                  createAt={createAt}
-                />
-              );
-            } else {
-              return (
-                <OtherMessageHistory
-                  name={selectedChatter.name}
-                  content={message.content}
-                  createAt={createAt}
-                />
-              );
-            }
-          })}
-        </Stack>
+        <TransitionGroup className="messages-in-room">
+          <Stack>
+            {sortedMessages.map((message) => {
+              const createAt = formatTimeChat(message.created_at);
+              const nodeRef = createRef<any>();
+              if (message.senderId.toString() === currentUser._id.toString()) {
+                return (
+                  <CSSTransition
+                    in={true}
+                    key={message._id.toString()}
+                    timeout={1000}
+                    classNames="item"
+                    nodeRef={nodeRef}
+                  >
+                    <div ref={nodeRef}>
+                      <MyMessageHistory
+                        name={currentUser.name}
+                        content={message.content}
+                        createAt={createAt}
+                      />
+                    </div>
+                  </CSSTransition>
+                );
+              } else {
+                return (
+                  <CSSTransition
+                    in={true}
+                    key={message._id.toString()}
+                    timeout={1000}
+                    classNames="item"
+                    nodeRef={nodeRef}
+                  >
+                    <div ref={nodeRef}>
+                      <OtherMessageHistory
+                        name={selectedChatter.name}
+                        content={message.content}
+                        createAt={createAt}
+                      />
+                    </div>
+                  </CSSTransition>
+                );
+              }
+            })}
+          </Stack>
+        </TransitionGroup>
       </Scrollbars>
     </div>
   );
