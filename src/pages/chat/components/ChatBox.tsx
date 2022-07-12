@@ -1,17 +1,22 @@
 import { useAppSelector } from "@/app/hook";
 import { selectUsers } from "@/pages/user/usersSlice";
+import { selectChat } from "../chatSlice";
 import ChatHistory from "./ChatHistory";
 import ChatMessage from "./ChatMessage";
 import Contact from "./Contact";
 
 export default function ChatBox() {
-  const { currentUser } = useAppSelector(selectUsers);
+  const { selectedChatter } = useAppSelector(selectChat);
 
   return (
-    <div className="chat-box">
-      <Contact data={{ ...currentUser, status: "Online" }} />
-      <ChatHistory></ChatHistory>
-      <ChatMessage></ChatMessage>
-    </div>
+    <>
+      {selectedChatter.name !== "" && (
+        <div className="chat-box">
+          <Contact data={selectedChatter} />
+          <ChatHistory></ChatHistory>
+          <ChatMessage></ChatMessage>
+        </div>
+      )}
+    </>
   );
 }

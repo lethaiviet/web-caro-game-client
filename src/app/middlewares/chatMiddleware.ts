@@ -26,6 +26,9 @@ export const chatMiddleware: Middleware = (store) => {
 
       socket.on("connect", () => {
         store.dispatch(actionChat.connectionEstablished());
+        socket.emit(
+          "chat:request:get-all-messages-from-all-private-chat-rooms"
+        );
       });
 
       socket.on("chat:response:get-all-users-status", (data) => {
@@ -42,6 +45,13 @@ export const chatMiddleware: Middleware = (store) => {
       socket.on("chat:response:send-message-from-private-chat-room", (data) => {
         store.dispatch(actionChat.recievePrivateMessage(data));
       });
+
+      socket.on(
+        "chat:response:get-all-messages-from-all-private-chat-rooms",
+        (data) => {
+          store.dispatch(actionChat.recieveAllMsgFromAllPrivateChatRoom(data));
+        }
+      );
     }
 
     if (isConnectionEstablished) {
@@ -59,6 +69,13 @@ export const chatMiddleware: Middleware = (store) => {
       if (actionChat.sendMessageToPrivateChatRoom.match(action)) {
         socket.emit(
           "chat:request:send-message-from-private-chat-room",
+          action.payload
+        );
+      }
+
+      if (actionChat.markAsReadAllMessagesInPrivateChatRoom.match(action)) {
+        socket.emit(
+          "chat:action:mark-as-read-all-messages-from-private-chat-room",
           action.payload
         );
       }

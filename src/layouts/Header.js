@@ -18,7 +18,7 @@ import { getAvatarTemplate } from "@/utils/utils"
 import { ChatDotsFill, GearWide, PersonCircle, BoxArrowRight } from "react-bootstrap-icons"
 import { logout } from "@/pages/auth/authThunk";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { actionChat } from "@/pages/chat/chatSlice";
+import { actionChat, selectChat } from "@/pages/chat/chatSlice";
 
 
 function DropdownToggleTitle() {
@@ -39,19 +39,24 @@ function DropdownToggleTitle() {
 
 function MessageIcon() {
     const navigate = useNavigate();
+    const { totalNotification } = useAppSelector(selectChat);
 
     return (
         <>
             <div className="d-inline-flex position-relative me-2" onClick={() => navigate(CHAT)}>
                 <ChatDotsFill size={18} color="blue" />
-                <Badge
-                    className="position-absolute top-0 start-100 translate-middle p-1 rounded-circle"
-                    pill
-                    bg="danger"
-                    style={{ lineHeight: 0.7 }}
-                >
-                    5<span className="visually-hidden">unread messages</span>
-                </Badge>
+                {
+                    totalNotification > 0 && (
+                        <Badge
+                            className="position-absolute top-0 start-100 translate-middle p-1 rounded-circle"
+                            pill
+                            bg="danger"
+                            style={{ lineHeight: 0.7 }}
+                        >
+                            {totalNotification > 9 ? "9+" : totalNotification}<span className="visually-hidden">unread messages</span>
+                        </Badge>)
+                }
+
             </div>
         </>
     );

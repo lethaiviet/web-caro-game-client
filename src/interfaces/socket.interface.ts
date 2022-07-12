@@ -15,7 +15,10 @@ export interface ServerToClientEvents {
     detailMessage: DetailMessage
   ) => void;
   "chat:response:get-all-messages-from-private-chat-room": (
-    allMessageInRoom: AllMessagesInRoom
+    allMessagesInRoom: AllMessagesInRoom
+  ) => void;
+  "chat:response:get-all-messages-from-all-private-chat-rooms": (
+    allMessages: AllMessagesInRoom[]
   ) => void;
 }
 
@@ -28,6 +31,9 @@ export interface ClientToServerEvents {
   ) => void;
   "chat:action:send-global-messages": (roomId: string, message: string) => void;
   "chat:action:join-private-room": (anotherUserId: string) => void;
+  "chat:action:mark-as-read-all-messages-from-private-chat-room": (
+    anotherUserId: string
+  ) => void;
   "chat:request:get-all-users-status": () => void;
   "chat:request:send-message-from-private-chat-room": (
     simpleMsg: SimpleMessage
@@ -35,6 +41,7 @@ export interface ClientToServerEvents {
   "chat:request:get-all-messages-from-private-chat-room": (
     anotherUserId: string
   ) => void;
+  "chat:request:get-all-messages-from-all-private-chat-rooms": () => void;
 }
 
 export interface InterServerEvents {

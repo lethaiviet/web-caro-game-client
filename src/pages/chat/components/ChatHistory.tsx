@@ -92,11 +92,14 @@ export default function ChatHistory() {
             {sortedMessages.map((message) => {
               const createAt = formatTimeChat(message.created_at);
               const nodeRef = createRef<any>();
+              const isRead = message.readBy.includes(
+                currentUser._id.toString()
+              );
+
               if (message.senderId.toString() === currentUser._id.toString()) {
                 return (
-                  <MyMessageHistoryWithAnimation
+                  <MyMessageHistory
                     key={message._id.toString()}
-                    ref={nodeRef}
                     name={currentUser.name}
                     content={message.content}
                     createAt={createAt}
@@ -104,13 +107,24 @@ export default function ChatHistory() {
                 );
               } else {
                 return (
-                  <OtherMessageHistoryWithAnimation
-                    key={message._id.toString()}
-                    ref={nodeRef}
-                    name={selectedChatter.name}
-                    content={message.content}
-                    createAt={createAt}
-                  />
+                  <>
+                    {isRead ? (
+                      <OtherMessageHistory
+                        key={message._id.toString()}
+                        name={selectedChatter.name}
+                        content={message.content}
+                        createAt={createAt}
+                      />
+                    ) : (
+                      <OtherMessageHistoryWithAnimation
+                        key={message._id.toString()}
+                        ref={nodeRef}
+                        name={selectedChatter.name}
+                        content={message.content}
+                        createAt={createAt}
+                      />
+                    )}
+                  </>
                 );
               }
             })}

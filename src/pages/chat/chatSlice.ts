@@ -16,6 +16,7 @@ interface ChatState {
   selectedChatter: UserStates;
   allMessages: AllMessagesInRoom[];
   messagesCurrentChater: DetailMessage[];
+  totalNotification: number;
 }
 
 const initialState: ChatState = {
@@ -25,6 +26,14 @@ const initialState: ChatState = {
   selectedChatter: { _id: "", name: "", status: "Offline", avatar: "" },
   allMessages: [],
   messagesCurrentChater: [],
+  totalNotification: 0,
+};
+
+const getTotalNotification = (allMessages: AllMessagesInRoom[]) => {
+  return allMessages.reduce(
+    (total, messages) => total + messages.countNotification,
+    0
+  );
 };
 
 export const ChatSlice = createSlice({
@@ -61,7 +70,18 @@ export const ChatSlice = createSlice({
         state.allMessages[findIdx] = action.payload;
       }
 
-      state.messagesCurrentChater = action.payload.messages;
+      if (state.selectedChatter._id === action.payload.roomName) {
+        state.messagesCurrentChater = action.payload.messages;
+        state.totalNotification = getTotalNotification(state.allMessages);
+      }
+    },
+
+    recieveAllMsgFromAllPrivateChatRoom(
+      state: ChatState,
+      action: PayloadAction<AllMessagesInRoom[]>
+    ) {
+      state.allMessages = action.payload;
+      state.totalNotification = getTotalNotification(state.allMessages);
     },
 
     recievePrivateMessage(
@@ -69,22 +89,30 @@ export const ChatSlice = createSlice({
       action: PayloadAction<DetailMessage>
     ) {
       const message = action.payload;
-      const allMessageInRoom: AllMessagesInRoom = {
-        roomName: message.senderId,
-        messages: [message],
-      };
 
       const findIdx = state.allMessages.findIndex(
         (x) => x.roomName === message.senderId
       );
 
       if (findIdx < 0) {
+        const allMessageInRoom: AllMessagesInRoom = {
+          roomName: message.senderId,
+          messages: [message],
+          countNotification: 1,
+        };
         state.allMessages.push(allMessageInRoom);
       } else {
         state.allMessages[findIdx].messages.push(message);
+        if (message.senderId !== state.selectedChatter._id) {
+          state.allMessages[findIdx].countNotification += 1;
+        }
       }
 
-      state.messagesCurrentChater.push(message);
+      if (state.selectedChatter._id === action.payload.senderId) {
+        state.messagesCurrentChater.push(message);
+      }
+
+      state.totalNotification += 1;
     },
 
     sendMessageToPrivateChatRoom(
@@ -97,13 +125,8 @@ export const ChatSlice = createSlice({
         _id: created_at,
         created_at,
         content: action.payload.content,
+        readBy: [action.payload.from],
       };
-
-      const allMessageInRoom: AllMessagesInRoom = {
-        roomName: message.senderId,
-        messages: [message],
-      };
-
       state.messagesCurrentChater.push(message);
 
       const findIdx = state.allMessages.findIndex(
@@ -111,10 +134,22 @@ export const ChatSlice = createSlice({
       );
 
       if (findIdx < 0) {
+        const allMessageInRoom: AllMessagesInRoom = {
+          roomName: message.senderId,
+          messages: [message],
+          countNotification: 0,
+        };
         state.allMessages.push(allMessageInRoom);
       } else {
         state.allMessages[findIdx].messages = state.messagesCurrentChater;
       }
+    },
+
+    markAsReadAllMessagesInPrivateChatRoom(
+      state: ChatState,
+      action: PayloadAction<string>
+    ) {
+      return;
     },
 
     requestGetAllMessagesInRoom(

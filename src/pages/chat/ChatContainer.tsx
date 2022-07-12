@@ -5,7 +5,7 @@ import { ChatBox, SideBarChat } from "./components";
 
 export default function ChatContainer() {
   const dispatch = useAppDispatch();
-  const { isConnected, usersStates } = useAppSelector(selectChat);
+  const { isConnected } = useAppSelector(selectChat);
 
   useEffect(() => {
     if (isConnected) dispatch(actionChat.requestGetAllUsersState());
@@ -14,7 +14,7 @@ export default function ChatContainer() {
 
   return (
     <div className="d-flex flex-wrap">
-      {usersStates && <SideBarChat data={usersStates} />}
+      <SideBarChat />
       <ChatBox></ChatBox>
     </div>
   );
