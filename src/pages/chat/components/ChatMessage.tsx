@@ -3,6 +3,7 @@ import { selectUsers } from "@/pages/user/usersSlice";
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { actionChat, selectChat } from "../chatSlice";
+import { SendFill } from "react-bootstrap-icons";
 
 export default function ChatMessage() {
   const dispacth = useAppDispatch();
@@ -16,6 +17,7 @@ export default function ChatMessage() {
   };
 
   const handleSendMessage = () => {
+    if (message === "") return;
     dispacth(
       actionChat.sendMessageToPrivateChatRoom({
         from: currentUser._id,
@@ -47,7 +49,9 @@ export default function ChatMessage() {
           onChange={handleChat}
           onKeyDown={handleSendMessageByKeyBoard}
         />
-        <Button className="send-btn" onClick={handleSendMessage} />
+        <Button className="send-btn" onClick={handleSendMessage}>
+          <SendFill color="white" />
+        </Button>
       </div>
     </div>
   );

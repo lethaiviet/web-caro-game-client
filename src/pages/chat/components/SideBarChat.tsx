@@ -47,21 +47,23 @@ const SideBarChat = () => {
   return (
     <div className="side-bar-chat">
       <ChatSearch onChange={handleSearch} />
-      <Scrollbars className="scoll-bar-chat">
-        {filteredData.map((x) => (
-          <Contact
-            key={x._id}
-            data={x}
-            selected={selectedChatter._id.toString() === x._id.toString()}
-            countNotification={getNumOfNotifications(x)}
-            onClick={() => {
-              dispatch(
-                actionChat.requestGetAllMessagesInRoom(x._id.toString())
-              );
-            }}
-          />
-        ))}
-      </Scrollbars>
+      <div className="scoll-bar-chat border-end">
+        <Scrollbars>
+          {filteredData.map((x) => (
+            <Contact
+              key={x._id}
+              data={x}
+              selected={selectedChatter._id.toString() === x._id.toString()}
+              countNotification={getNumOfNotifications(x)}
+              onClick={() => {
+                dispatch(
+                  actionChat.requestGetAllMessagesInRoom(x._id.toString())
+                );
+              }}
+            />
+          ))}
+        </Scrollbars>
+      </div>
     </div>
   );
 };
