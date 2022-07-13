@@ -1,7 +1,7 @@
 //@ts-ignore
 import { Scrollbars } from "react-custom-scrollbars-2";
 import ChatSearch from "./ChatSearch";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import Contact from "./Contact";
 import { UserStates } from "@/interfaces/users.interface";
@@ -11,7 +11,7 @@ import { selectUsers } from "@/pages/user/usersSlice";
 
 const SideBarChat = () => {
   const dispatch = useAppDispatch();
-  const { selectedChatter, allMessages, usersStates } =
+  const { selectedChatter, allMessages, usersStates, messagesCurrentChater } =
     useAppSelector(selectChat);
   const { currentUser } = useAppSelector(selectUsers);
   const [wordSearch, setWordSearch] = useState("");
@@ -22,13 +22,24 @@ const SideBarChat = () => {
     setWordSearch(target.value);
   };
 
-  const getNumOfNotifications = (userStates: UserStates) => {
-    const findIdx = allMessages.findIndex((x) => x.roomName === userStates._id);
-    return findIdx < 0 ? 0 : allMessages[findIdx].countNotification;
-  };
+  const countNotificationByUserId = useCallback(
+    (userId: string) => {
+      const findIdx = allMessages.findIndex((x) => x.roomName === userId);
+      return findIdx < 0 ? 0 : allMessages[findIdx].countNotification;
+    },
+    [allMessages]
+  );
+
+  const countNotificationCurrentChater = useCallback(() => {
+    return messagesCurrentChater.reduce(
+      (total, message) =>
+        (total += message.readBy.includes(currentUser._id) ? 0 : 1),
+      0
+    );
+  }, [messagesCurrentChater]);
 
   useEffect(() => {
-    if (selectedChatter._id !== "") {
+    if (countNotificationCurrentChater() > 0) {
       const timer = setTimeout(() => {
         dispatch(
           actionChat.markAsReadAllMessagesInPrivateChatRoom(selectedChatter._id)
@@ -40,7 +51,7 @@ const SideBarChat = () => {
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedChatter]);
+  }, [selectedChatter, countNotificationCurrentChater]);
 
   useEffect(() => {
     setFilteredData(
@@ -60,7 +71,7 @@ const SideBarChat = () => {
               key={x._id}
               data={x}
               selected={selectedChatter._id.toString() === x._id.toString()}
-              countNotification={getNumOfNotifications(x)}
+              countNotification={countNotificationByUserId(x._id)}
               onClick={() => {
                 dispatch(
                   actionChat.requestGetAllMessagesInRoom(x._id.toString())
