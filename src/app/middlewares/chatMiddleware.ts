@@ -1,14 +1,14 @@
 import { SOCKET_SERVER_URL } from "@/config/const";
 import {
-  ClientToServerEvents,
-  ServerToClientEvents,
+  SocketClientEvents,
+  SocketServerEvents,
 } from "@/interfaces/socket.interface";
 import { actionChat } from "@/pages/chat/chatSlice";
 import { Middleware } from "redux";
 import { io, Socket } from "socket.io-client";
 
 export const chatMiddleware: Middleware = (store) => {
-  let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
+  let socket: Socket<SocketServerEvents, SocketClientEvents>;
 
   return (next) => (action) => {
     const isConnectionEstablished = socket && store.getState().chat.isConnected;
@@ -26,28 +26,23 @@ export const chatMiddleware: Middleware = (store) => {
 
       socket.on("connect", () => {
         store.dispatch(actionChat.connectionEstablished());
-        socket.emit(
-          "chat:request:get-all-messages-from-all-private-chat-rooms"
-        );
+        socket.emit("chat:request:get-all-private-messages-in-all-rooms");
       });
 
-      socket.on("chat:response:get-all-users-status", (data) => {
+      socket.on("chat:inform:get-all-users-status", (data) => {
         store.dispatch(actionChat.setAllUsersState({ usersState: data }));
       });
 
-      socket.on(
-        "chat:response:get-all-messages-from-private-chat-room",
-        (data) => {
-          store.dispatch(actionChat.getAllMessagesInRoom(data));
-        }
-      );
+      socket.on("chat:response:get-all-private-messages-in-room", (data) => {
+        store.dispatch(actionChat.getAllMessagesInRoom(data));
+      });
 
-      socket.on("chat:response:send-message-from-private-chat-room", (data) => {
+      socket.on("chat:response:send-private-message", (data) => {
         store.dispatch(actionChat.recievePrivateMessage(data));
       });
 
       socket.on(
-        "chat:response:get-all-messages-from-all-private-chat-rooms",
+        "chat:response:get-all-private-messages-in-all-rooms",
         (data) => {
           store.dispatch(actionChat.recieveAllMsgFromAllPrivateChatRoom(data));
         }
@@ -56,26 +51,25 @@ export const chatMiddleware: Middleware = (store) => {
 
     if (isConnectionEstablished) {
       if (actionChat.requestGetAllUsersState.match(action)) {
-        socket.emit("chat:request:get-all-users-status");
+        socket.emit("chat:acknowledgement:get-all-users-status", (data) => {
+          store.dispatch(actionChat.setAllUsersState({ usersState: data }));
+        });
       }
 
       if (actionChat.requestGetAllMessagesInRoom.match(action)) {
         socket.emit(
-          "chat:request:get-all-messages-from-private-chat-room",
+          "chat:request:get-all-private-messages-in-room",
           action.payload
         );
       }
 
-      if (actionChat.sendMessageToPrivateChatRoom.match(action)) {
-        socket.emit(
-          "chat:request:send-message-from-private-chat-room",
-          action.payload
-        );
+      if (actionChat.sendPrivateMessageToRoom.match(action)) {
+        socket.emit("chat:request:send-private-message", action.payload);
       }
 
       if (actionChat.markAsReadAllMessagesInPrivateChatRoom.match(action)) {
         socket.emit(
-          "chat:action:mark-as-read-all-messages-from-private-chat-room",
+          "chat:action:mark-as-read-all-private-messages-in-room",
           action.payload
         );
       }

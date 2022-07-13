@@ -19,7 +19,7 @@ export default function ChatMessage() {
   const handleSendMessage = () => {
     if (message === "") return;
     dispacth(
-      actionChat.sendMessageToPrivateChatRoom({
+      actionChat.sendPrivateMessageToRoom({
         from: currentUser._id,
         to: selectedChatter._id,
         content: message,

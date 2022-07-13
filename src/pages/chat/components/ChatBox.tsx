@@ -1,5 +1,4 @@
 import { useAppSelector } from "@/app/hook";
-import { selectUsers } from "@/pages/user/usersSlice";
 import { selectChat } from "../chatSlice";
 import ChatHistory from "./ChatHistory";
 import ChatMessage from "./ChatMessage";
@@ -12,7 +11,7 @@ export default function ChatBox() {
     <>
       {selectedChatter.name !== "" && (
         <div className="chat-box">
-          <Contact data={selectedChatter} />
+          <Contact key={selectedChatter._id} data={selectedChatter} />
           <ChatHistory></ChatHistory>
           <ChatMessage></ChatMessage>
         </div>

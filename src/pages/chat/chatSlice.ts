@@ -110,12 +110,12 @@ export const ChatSlice = createSlice({
 
       if (state.selectedChatter._id === action.payload.senderId) {
         state.messagesCurrentChater.push(message);
+      } else {
+        state.totalNotification += 1;
       }
-
-      state.totalNotification += 1;
     },
 
-    sendMessageToPrivateChatRoom(
+    sendPrivateMessageToRoom(
       state: ChatState,
       action: PayloadAction<CommonMessage>
     ) {
