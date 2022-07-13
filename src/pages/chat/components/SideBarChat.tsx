@@ -7,11 +7,13 @@ import Contact from "./Contact";
 import { UserStates } from "@/interfaces/users.interface";
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { actionChat, selectChat } from "../chatSlice";
+import { selectUsers } from "@/pages/user/usersSlice";
 
 const SideBarChat = () => {
   const dispatch = useAppDispatch();
   const { selectedChatter, allMessages, usersStates } =
     useAppSelector(selectChat);
+  const { currentUser } = useAppSelector(selectUsers);
   const [wordSearch, setWordSearch] = useState("");
   const [filteredData, setFilteredData] = useState<UserStates[]>(usersStates);
 
@@ -41,7 +43,11 @@ const SideBarChat = () => {
   }, [selectedChatter]);
 
   useEffect(() => {
-    setFilteredData(usersStates.filter((x) => x.name.includes(wordSearch)));
+    setFilteredData(
+      usersStates.filter(
+        (x) => x.name.includes(wordSearch) && x._id !== currentUser._id
+      )
+    );
   }, [usersStates, wordSearch]);
 
   return (

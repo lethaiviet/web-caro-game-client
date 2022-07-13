@@ -79,6 +79,11 @@ export const chatMiddleware: Middleware = (store) => {
           action.payload
         );
       }
+
+      if (actionChat.requestDisconnectSocket.match(action)) {
+        socket.removeAllListeners();
+        socket.disconnect();
+      }
     }
 
     next(action);

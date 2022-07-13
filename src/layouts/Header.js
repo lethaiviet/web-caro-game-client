@@ -68,6 +68,7 @@ function NavBarCollapse() {
 
     const handleLogout = () => {
         dispatch(logout()).then(unwrapResult)
+            .then(() => dispatch(actionChat.requestDisconnectSocket()))
             .then(() => navigate(LOGIN))
             .catch(err => console.log(err))
     }

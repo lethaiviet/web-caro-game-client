@@ -167,7 +167,11 @@ export const ChatSlice = createSlice({
     },
 
     requestGetAllUsersState(state: ChatState) {
-      return state;
+      return;
+    },
+
+    requestDisconnectSocket(state: ChatState) {
+      return;
     },
   },
 });

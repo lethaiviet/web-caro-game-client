@@ -16,7 +16,7 @@ export const getCurrentTime = (): string => {
 };
 
 export const formatTimeChat = (dateString: string): string => {
-  return format(parseISO(dateString), "MMM dd, h:mm aa");
+  return format(parseISO(dateString), "MMM dd, hh:mm aaa");
 };
 
 export const sortMessagesByTime = (
