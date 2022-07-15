@@ -8,7 +8,7 @@ import {
 } from "react-bootstrap";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import iconGame from "@assets/mini-icon-game.png";
-import { CHAT, LOGIN, ROOT, USER_PROFILE } from "@/navigation/const"
+import { CHAT, LOGIN, ROOT, USER_PROFILE, PAGES_NAME_MAP } from "@/navigation/const"
 import { useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { selectUsers } from "@/pages/user/usersSlice";
@@ -136,13 +136,11 @@ function Header() {
                         />
                     </Navbar.Brand>
 
-                    {
-                        atUserProfile ?
-                            <Navbar.Brand as={Link} to={USER_PROFILE}>
-                                User Profile
-                            </Navbar.Brand> :
-                            <NavBarCollapse />
-                    }
+                    <Navbar.Brand>
+                        {PAGES_NAME_MAP[location.pathname]}
+                    </Navbar.Brand>
+
+                    {atUserProfile || <NavBarCollapse />}
 
                 </Container>
 

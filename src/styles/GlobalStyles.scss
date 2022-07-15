@@ -6,8 +6,14 @@
 
 @import "../pages/chat/components/styles";
 
+@import "../pages/home/styles";
+
 @import "../layouts/styles";
 
 #upload-avatar::-webkit-file-upload-button {
   visibility: hidden;
+}
+
+.font-round {
+  font-family: "Varela Round", sans-serif;
 }

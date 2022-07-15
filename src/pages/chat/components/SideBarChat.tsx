@@ -36,7 +36,7 @@ const SideBarChat = () => {
         (total += message.readBy.includes(currentUser._id) ? 0 : 1),
       0
     );
-  }, [messagesCurrentChater]);
+  }, [currentUser._id, messagesCurrentChater]);
 
   useEffect(() => {
     if (countNotificationCurrentChater() > 0) {
