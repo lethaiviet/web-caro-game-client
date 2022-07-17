@@ -1,0 +1,7 @@
+$num-of-cols-grid: 30;
+$num-of-rows-grid: 20;
+
+:export {
+  num-of-cols-grid: $num-of-cols-grid;
+  num-of-rows-grid: $num-of-rows-grid;
+}
