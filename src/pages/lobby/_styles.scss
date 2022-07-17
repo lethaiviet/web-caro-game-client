@@ -1,0 +1,20 @@
+.lobby-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20rem;
+  border-radius: 20px;
+}
+
+@include media-breakpoint-down(lg) {
+  .lobby-card {
+    height: 15rem;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .lobby-card {
+    padding-top: 1rem;
+    height: 5rem;
+  }
+}

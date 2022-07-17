@@ -1,0 +1,63 @@
+$num-of-cols-grid: 20;
+$num-of-rows-grid: 10;
+$cell-size: 50px;
+
+$cell-color: #1f3540;
+$background-color: #192a32;
+
+$scroll-bar-board-game-height: calc(80vh + 25px);
+$scroll-bar-board-game-width: calc(80vw + 25px);
+
+.board-game {
+  display: grid;
+  grid-template-rows: repeat($num-of-rows-grid, $cell-size);
+  grid-template-columns: repeat($num-of-cols-grid, $cell-size);
+  gap: 5px;
+}
+
+.cell {
+  background-color: $cell-color;
+  border-radius: 5%;
+  box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.scroll-bar-board-game {
+  padding: 10px;
+  background-color: $background-color;
+  height: $scroll-bar-board-game-height;
+  width: $scroll-bar-board-game-width;
+}
+
+.thumb-vertical {
+  position: relative;
+  cursor: pointer;
+  border-radius: inherit;
+  background-color: #d9dad5;
+}
+
+.track-vertical {
+  position: absolute;
+  width: 6px;
+  display: block !important;
+  right: 2px;
+  bottom: 2px;
+  top: 2px;
+  border-radius: 3px;
+}
+
+.thumb-horizontal {
+  position: relative;
+  cursor: pointer;
+  border-radius: inherit;
+  background-color: #d9dad5;
+}
+
+.track-horizontal {
+  position: absolute;
+  height: 6px;
+  display: block !important;
+  right: 2px;
+  left: 2px;
+  bottom: 2px;
+  border-radius: 3px;
+}

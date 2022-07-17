@@ -6,9 +6,9 @@ import {
     Image,
     Badge,
 } from "react-bootstrap";
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link, useNavigate, useMatch } from "react-router-dom";
 import iconGame from "@assets/mini-icon-game.png";
-import { CHAT, LOGIN, ROOT, USER_PROFILE, PAGES_NAME_MAP } from "@/navigation/const"
+import { CHAT, LOGIN, ROOT, USER_PROFILE, PAGES_NAME_MAP, LOBBY } from "@/navigation/const"
 import { useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { selectUsers } from "@/pages/user/usersSlice";
@@ -109,6 +109,7 @@ function NavBarCollapse() {
 
 function Header() {
     const location = useLocation();
+    const matchLobby = useMatch(LOBBY);
     const { currentUser } = useAppSelector(selectUsers);
     const dispatch = useAppDispatch();
     const atUserProfile = location.pathname === USER_PROFILE;
@@ -137,7 +138,7 @@ function Header() {
                     </Navbar.Brand>
 
                     <Navbar.Brand>
-                        {PAGES_NAME_MAP[location.pathname]}
+                        {matchLobby ? `${PAGES_NAME_MAP[matchLobby.pattern.path]}/${matchLobby.params.roomId}` : PAGES_NAME_MAP[location.pathname]}
                     </Navbar.Brand>
 
                     {atUserProfile || <NavBarCollapse />}

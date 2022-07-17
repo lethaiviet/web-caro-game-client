@@ -13,10 +13,14 @@ import {
   ERROR_500,
   USER_PROFILE,
   PLAY_FOR_FUN,
+  LOBBY,
+  GAME,
 } from "./const";
 import { PrivateRoot } from "./PrivateRoot";
 import UserProfile from "@/pages/user";
 import PlayForFun from "@/pages/play-for-fun";
+import Lobby from "@/pages/lobby";
+import Game from "@/pages/game";
 
 function RootConfig() {
   return (
@@ -28,7 +32,9 @@ function RootConfig() {
           <Route path={ROOT} element={<Home />} />
           <Route path={USER_PROFILE} element={<UserProfile />} />
           <Route path={PLAY_FOR_FUN} element={<PlayForFun />} />
+          <Route path={LOBBY} element={<Lobby />} />
         </Route>
+        <Route path={GAME} element={<Game />} />
         {/* </Route> */}
 
         <Route path={LOGIN} element={<Auth />} />

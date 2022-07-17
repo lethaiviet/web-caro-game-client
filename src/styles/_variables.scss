@@ -8,6 +8,8 @@ $chat-border-color: #dee2e6;
 //LAYOUT - HEADER
 $navbar-header-height: 70px;
 
+$full-screen-without-header: calc(100vh - #{$navbar-header-height});
+
 //PAGES - CHAT
 $side-bar-chat-width: 250px;
 

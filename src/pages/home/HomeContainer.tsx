@@ -20,7 +20,7 @@ interface SelectGameModeCardProps {
 
 const SelectGameModeCard = ({ src, children }: SelectGameModeCardProps) => {
   return (
-    <Card>
+    <Card border="dark" style={{ borderRadius: "20px" }}>
       <Stack className="align-items-center">
         <Image src={src} alt="src" fluid width="380px"></Image>
         {children}
@@ -44,12 +44,11 @@ export default function HomeContainer() {
               </Link>
             </SelectGameModeCard>
           </Col>
+
           <Col md={5} className="d-none d-md-block">
-            <Card>
-              <SelectGameModeCard src={playRank}>
-                <Button className="select-game-mode-btn mb-3">Play Rank</Button>
-              </SelectGameModeCard>
-            </Card>
+            <SelectGameModeCard src={playRank}>
+              <Button className="select-game-mode-btn mb-3">Play Rank</Button>
+            </SelectGameModeCard>
           </Col>
 
           <Button className="select-game-mode-btn d-block d-md-none mb-3">

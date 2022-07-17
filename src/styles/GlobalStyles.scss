@@ -8,6 +8,10 @@
 
 @import "../pages/home/styles";
 
+@import "../pages/lobby/styles";
+
+@import "../pages/game/styles";
+
 @import "../layouts/styles";
 
 #upload-avatar::-webkit-file-upload-button {
@@ -16,4 +20,8 @@
 
 .font-round {
   font-family: "Varela Round", sans-serif;
+}
+
+.full-screen-height {
+  height: $full-screen-without-header;
 }
