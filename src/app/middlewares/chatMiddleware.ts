@@ -20,10 +20,6 @@ export const chatMiddleware: Middleware = (store) => {
         withCredentials: true,
       });
 
-      socket.onAny((event, ...args) => {
-        console.log(event, args);
-      });
-
       socket.on("connect", () => {
         store.dispatch(actionChat.connectionEstablished());
         socket.emit(

@@ -3,6 +3,7 @@ import {
   DetailMessage,
   SimpleMessage,
 } from "./chat-messages.interface";
+import { GameRoom } from "./game-rooms.interface";
 import { User, UserStates } from "./users.interface";
 
 export interface SocketServerEvents {
@@ -11,6 +12,7 @@ export interface SocketServerEvents {
   "chat:response:get-all-private-messages-in-room": (
     allMessagesInRoom: AllMessagesInRoom
   ) => void;
+  "game:inform:get-all-p4f-rooms": (gameRooms: GameRoom[]) => void;
 }
 
 export interface SocketClientEvents {
@@ -26,6 +28,13 @@ export interface SocketClientEvents {
   ) => void;
   "chat:acknowledgement:get-all-private-messages-in-all-rooms": (
     callback: (allMessages: AllMessagesInRoom[]) => void
+  ) => void;
+  "game:acknowledgement:create-p4f-room": (
+    callback: (gameRoom: GameRoom, error: Error) => void
+  ) => void;
+  "game:acknowledgement:join-p4f-room": (
+    roomId: string,
+    callback: (gameRoom: GameRoom, error: Error) => void
   ) => void;
 }
 

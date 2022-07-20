@@ -19,6 +19,7 @@ import { ChatDotsFill, GearWide, PersonCircle, BoxArrowRight } from "react-boots
 import { logout } from "@/pages/auth/authThunk";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { actionChat, selectChat } from "@/pages/chat/chatSlice";
+import { actionGame } from "@/pages/game/gameSlice";
 
 
 function DropdownToggleTitle() {
@@ -118,6 +119,8 @@ function Header() {
         if (currentUser._id === "") {
             dispatch(getCurrentUser()).then(
                 dispatch(actionChat.startConnection())
+            ).then(
+                dispatch(actionGame.startConnection())
             )
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
