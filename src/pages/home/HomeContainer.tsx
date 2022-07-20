@@ -39,7 +39,7 @@ export default function HomeContainer() {
         <Row>
           <Col md={{ span: 5, offset: 1 }} className="d-none d-md-block">
             <SelectGameModeCard src={playForFun}>
-              <Link className="select-game-mode-btn mb-3" to={PLAY_FOR_FUN}>
+              <Link className="american-purple-btn mb-3" to={PLAY_FOR_FUN}>
                 Play For Fun
               </Link>
             </SelectGameModeCard>
@@ -47,14 +47,14 @@ export default function HomeContainer() {
 
           <Col md={5} className="d-none d-md-block">
             <SelectGameModeCard src={playRank}>
-              <Button className="select-game-mode-btn mb-3">Play Rank</Button>
+              <Button className="american-purple-btn mb-3">Play Rank</Button>
             </SelectGameModeCard>
           </Col>
 
-          <Button className="select-game-mode-btn d-block d-md-none mb-3">
+          <Button className="american-purple-btn d-block d-md-none mb-3">
             Play For Fun
           </Button>
-          <Button className="select-game-mode-btn d-block d-md-none">
+          <Button className="american-purple-btn d-block d-md-none">
             Play Rank
           </Button>
         </Row>

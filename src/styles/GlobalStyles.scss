@@ -6,8 +6,6 @@
 
 @import "../pages/chat/components/styles";
 
-@import "../pages/home/styles";
-
 @import "../pages/lobby/styles";
 
 @import "../pages/game/styles";
@@ -24,4 +22,20 @@
 
 .full-screen-height {
   height: $full-screen-without-header;
+}
+
+.american-purple-btn {
+  padding: 6px 12px;
+  text-decoration: none;
+  background-color: $american-purple;
+  border: 1px solid white;
+  border-radius: 20px;
+  color: white;
+
+  &:hover,
+  &:focus {
+    background-color: white;
+    border: 1px solid $american-purple;
+    color: $american-purple;
+  }
 }

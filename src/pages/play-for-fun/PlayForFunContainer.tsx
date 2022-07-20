@@ -6,12 +6,26 @@ import {
   InputGroup,
   Row,
   Stack,
+  Image,
 } from "react-bootstrap";
 import Scrollbars from "react-custom-scrollbars-2";
 import RoomCard from "./components/RoomCard";
 import { PlusCircle } from "react-bootstrap-icons";
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { actionGame, selectGame } from "../game/gameSlice";
+import noRoomImage from "@assets/no-rooms.png";
+
+const EmptyFromView = () => {
+  return (
+    <Container className="border h-75 d-flex justify-content-center align-items-center">
+      <Stack className="d-flex justify-content-center align-items-center">
+        <Image src={noRoomImage} alt={noRoomImage} fluid width={300} />
+        <h5>Currently, there are no room here.</h5>
+        <div>Please click create new room button.</div>
+      </Stack>
+    </Container>
+  );
+};
 
 export default function PlayForFunContainer() {
   const dispatch = useAppDispatch();
@@ -36,20 +50,17 @@ export default function PlayForFunContainer() {
           </Col>
           <Col className="d-flex justify-content-end">
             <Button
-              className="d-flex align-items-center"
+              className="d-flex align-items-center american-purple-btn"
               onClick={handleClickToCreateRoom}
             >
-              <PlusCircle className="me-2" />
+              <PlusCircle className="me-2" size={20} />
               Create New Room
             </Button>
           </Col>
         </Row>
 
         {playForFunRooms.length === 0 ? (
-          <div>
-            Currently, there are no room here. Please click create new room
-            button.
-          </div>
+          <EmptyFromView />
         ) : (
           <Scrollbars className="border">
             <Container className="my-2">
