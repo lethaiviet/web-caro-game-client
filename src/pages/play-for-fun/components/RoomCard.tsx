@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/app/hook";
+import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { GameRoom } from "@/interfaces/game-rooms.interface";
 import { UserStates } from "@/interfaces/users.interface";
 import { selectChat } from "@/pages/chat/chatSlice";
@@ -7,11 +7,13 @@ import { useEffect, useState } from "react";
 import { Button, Card, Stack, Row, Col } from "react-bootstrap";
 import Avatar from "./Avatar";
 import { PersonCircle } from "react-bootstrap-icons";
+import _ from "lodash";
+import { actionGame } from "@/pages/game/gameSlice";
 
 const PlayersInfoSection = ({ data }: { data: UserStates[] }) => {
   const numOfPlayer = data.length;
   const numOfEmptySlot = 2 - numOfPlayer;
-  console.log(numOfEmptySlot);
+
   return (
     <>
       {numOfEmptySlot > 0 && <Row>Left {numOfEmptySlot} slot</Row>}
@@ -20,6 +22,7 @@ const PlayersInfoSection = ({ data }: { data: UserStates[] }) => {
       <Row>
         {data.map((player) => (
           <Avatar
+            key={player._id}
             src={
               player.avatar === ""
                 ? getAvatarTemplate(player.name, 75)
@@ -30,11 +33,14 @@ const PlayersInfoSection = ({ data }: { data: UserStates[] }) => {
 
         {Array(numOfEmptySlot)
           .fill("")
-          .map((x) => (
-            <div className="m-1 p-0" style={{ height: "2rem", width: "2rem" }}>
+          .map((x, idx) => (
+            <div
+              key={idx}
+              className="m-1 p-0"
+              style={{ height: "2rem", width: "2rem" }}
+            >
               <PersonCircle size="2rem" className="p-0" />
             </div>
-            // <Avatar src={getAvatarTemplate(x, 75)} />
           ))}
       </Row>
     </>
@@ -44,9 +50,16 @@ const PlayersInfoSection = ({ data }: { data: UserStates[] }) => {
 export default function RoomCard({ data }: { data: GameRoom }) {
   const [players, setPlayers] = useState<UserStates[]>([]);
   const { usersStates } = useAppSelector(selectChat);
+  const dispatch = useAppDispatch();
+
+  const handleClickToJoinRoom = () => {
+    dispatch(actionGame.joinPlayForFunRoom(data._id));
+  };
 
   useEffect(() => {
-    const findPlayers = usersStates.filter((x) => data.players.includes(x._id));
+    const findPlayers = _.filter(usersStates, (x) =>
+      _.some(data.players, ["_id", x._id])
+    );
     setPlayers(findPlayers);
   }, [data]);
 
@@ -61,7 +74,7 @@ export default function RoomCard({ data }: { data: GameRoom }) {
         </span>
         <Row>
           <Col className="d-flex align-items-end">
-            <Button>Join</Button>
+            <Button onClick={handleClickToJoinRoom}>Join</Button>
           </Col>
           <Col xs={{ span: 4, offset: 4 }}>
             <PlayersInfoSection data={players} />

@@ -14,7 +14,8 @@ export const gameMiddleware: Middleware = (store) => {
     const isConnectionEstablished = socket && store.getState().game.isConnected;
 
     if (actionGame.startConnection.match(action) && !isConnectionEstablished) {
-      //start connect sokect io with "/chat" space name
+      //start connect sokect io with "/game" space name
+      console.log("gameMiddleware");
       socket = io(SOCKET_SERVER_URL + "/game", {
         transports: ["websocket"],
         withCredentials: true,
@@ -30,6 +31,12 @@ export const gameMiddleware: Middleware = (store) => {
 
       socket.on("game:inform:get-all-p4f-rooms", (data) => {
         store.dispatch(actionGame.setPlayForFunRooms(data));
+      });
+
+      socket.on("game:response:get-p4f-room-data", (data) => {
+        store.dispatch(
+          actionGame.setCurrentPlayForFunRoom({ gameRoom: data, error: null })
+        );
       });
     }
 
@@ -55,6 +62,11 @@ export const gameMiddleware: Middleware = (store) => {
             );
           }
         );
+      }
+
+      if (actionGame.requestLeaveCurrentRoom.match(action)) {
+        socket.emit("game:action:leave-current-room");
+        actionGame.resetCurrentPlayForFunRoom();
       }
 
       if (actionGame.requestDisconnectSocket.match(action)) {

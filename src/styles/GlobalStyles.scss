@@ -38,4 +38,9 @@
     border: 1px solid $american-purple;
     color: $american-purple;
   }
+
+  &:disabled {
+    background-color: #52194a;
+    color: white;
+  }
 }

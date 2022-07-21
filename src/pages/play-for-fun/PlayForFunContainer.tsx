@@ -14,6 +14,10 @@ import { PlusCircle } from "react-bootstrap-icons";
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { actionGame, selectGame } from "../game/gameSlice";
 import noRoomImage from "@assets/no-rooms.png";
+import { useNavigate } from "react-router";
+import { LOBBY, ROOM_ID_PARAM } from "@/navigation/const";
+import _ from "lodash";
+import { useEffect } from "react";
 
 const EmptyFromView = () => {
   return (
@@ -29,10 +33,21 @@ const EmptyFromView = () => {
 
 export default function PlayForFunContainer() {
   const dispatch = useAppDispatch();
-  const { playForFunRooms } = useAppSelector(selectGame);
+  const navigate = useNavigate();
+  const { playForFunRooms, currentPlayForFunRoom } = useAppSelector(selectGame);
+
+  useEffect(() => {
+    if (currentPlayForFunRoom._id !== "") {
+      navigate(_.replace(LOBBY, ROOM_ID_PARAM, currentPlayForFunRoom._id));
+    }
+  }, [currentPlayForFunRoom]);
 
   const handleClickToCreateRoom = () => {
-    dispatch(actionGame.createPlayForFunRoom());
+    const dispatchCreateRoom = async () => {
+      dispatch(actionGame.createPlayForFunRoom());
+    };
+
+    dispatchCreateRoom();
   };
 
   return (
@@ -52,6 +67,7 @@ export default function PlayForFunContainer() {
             <Button
               className="d-flex align-items-center american-purple-btn"
               onClick={handleClickToCreateRoom}
+              disabled={currentPlayForFunRoom._id !== ""}
             >
               <PlusCircle className="me-2" size={20} />
               Create New Room

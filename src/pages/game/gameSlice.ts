@@ -10,23 +10,25 @@ interface GameState {
   errorMsg: string | null;
 }
 
+const emptyPlayForFunRoom = {
+  _id: "",
+  name: "",
+  createdAt: 0,
+  players: [],
+  spectators: [],
+  isStarted: false,
+};
+
 const initialState: GameState = {
   isConnecting: false,
   isConnected: false,
   playForFunRooms: [],
   errorMsg: null,
-  currentPlayForFunRoom: {
-    _id: "",
-    name: "",
-    createdAt: 0,
-    players: [],
-    spectators: [],
-    isStarted: false,
-  },
+  currentPlayForFunRoom: emptyPlayForFunRoom,
 };
 
 export const GameSlice = createSlice({
-  name: "chat",
+  name: "game",
   initialState,
   reducers: {
     startConnection(state: GameState) {
@@ -44,15 +46,20 @@ export const GameSlice = createSlice({
 
     setCurrentPlayForFunRoom(
       state: GameState,
-      action: PayloadAction<{ gameRoom: GameRoom; error: Error }>
+      action: PayloadAction<{ gameRoom: GameRoom; error: Error | null }>
     ) {
       state.errorMsg = action.payload.error
         ? action.payload.error.message
         : null;
 
-      if (state.errorMsg != null) {
+      if (state.errorMsg === null) {
+        console.log("setCurrentPlayForFunRoom");
         state.currentPlayForFunRoom = action.payload.gameRoom;
       }
+    },
+
+    resetCurrentPlayForFunRoom(state: GameState) {
+      state.currentPlayForFunRoom = emptyPlayForFunRoom;
     },
 
     createPlayForFunRoom(state: GameState) {
@@ -64,6 +71,10 @@ export const GameSlice = createSlice({
     },
 
     requestDisconnectSocket(state: GameState) {
+      return;
+    },
+
+    requestLeaveCurrentRoom(state: GameState) {
       return;
     },
   },
