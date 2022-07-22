@@ -1,10 +1,11 @@
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { UserStates } from "@/interfaces/users.interface";
+import { GAME, ROOM_ID_PARAM } from "@/navigation/const";
 import { getAvatarTemplate } from "@/utils/utils";
 import _ from "lodash";
 import { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Row, Stack } from "react-bootstrap";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { selectChat } from "../chat/chatSlice";
 import { actionGame, selectGame } from "../game/gameSlice";
 import { selectUsers } from "../user/usersSlice";
@@ -95,19 +96,19 @@ const Player2Card = ({ data }: { data: PlayerData }) => {
 export default function LobbyContainer() {
   const { currentUser } = useAppSelector(selectUsers);
   const { usersStates } = useAppSelector(selectChat);
+  const { roomId } = useParams();
   const { currentPlayForFunRoom, isConnected } = useAppSelector(selectGame);
   const [player1, setPlayer1] = useState(emptyPlayerData);
   const [player2, setPlayer2] = useState(emptyPlayerData);
   const dispatch = useAppDispatch();
-  const { roomId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(currentPlayForFunRoom);
     const players = currentPlayForFunRoom.players;
     const numOfPlayer = players.length;
+    const MAX_PLAYER = 2;
 
     const getPlayerDataByIdx = (idx: number): PlayerData => {
-      const MAX_PLAYER = 2;
       idx = Math.min(idx, MAX_PLAYER);
       const player = players[idx];
 
@@ -131,7 +132,15 @@ export default function LobbyContainer() {
       return playerData;
     };
 
-    if (numOfPlayer == 0 || numOfPlayer > 2) return;
+    if (numOfPlayer == 0 || numOfPlayer > MAX_PLAYER) return;
+
+    if (
+      roomId &&
+      numOfPlayer == MAX_PLAYER &&
+      currentPlayForFunRoom.isStarted
+    ) {
+      navigate(_.replace(GAME, ROOM_ID_PARAM, roomId));
+    }
 
     if (numOfPlayer == 1) {
       setPlayer1(getPlayerDataByIdx(0));
@@ -152,7 +161,7 @@ export default function LobbyContainer() {
   }, [currentPlayForFunRoom]);
 
   useEffect(() => {
-    if (isConnected && roomId !== undefined) {
+    if (isConnected && roomId) {
       dispatch(actionGame.joinPlayForFunRoom(roomId));
     }
   }, [isConnected]);
