@@ -62,6 +62,13 @@ export const GameSlice = createSlice({
       state.currentPlayForFunRoom = emptyPlayForFunRoom;
     },
 
+    acceptRunningGame(
+      state: GameState,
+      action: PayloadAction<{ roomId: string; isReady: boolean }>
+    ) {
+      return;
+    },
+
     createPlayForFunRoom(state: GameState) {
       return;
     },

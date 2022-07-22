@@ -74,7 +74,12 @@ export default function RoomCard({ data }: { data: GameRoom }) {
         </span>
         <Row>
           <Col className="d-flex align-items-end">
-            <Button onClick={handleClickToJoinRoom}>Join</Button>
+            <Button
+              className="american-purple-btn"
+              onClick={handleClickToJoinRoom}
+            >
+              Join
+            </Button>
           </Col>
           <Col xs={{ span: 4, offset: 4 }}>
             <PlayersInfoSection data={players} />

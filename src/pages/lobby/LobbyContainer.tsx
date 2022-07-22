@@ -1,11 +1,12 @@
-import { useAppSelector } from "@/app/hook";
+import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { UserStates } from "@/interfaces/users.interface";
 import { getAvatarTemplate } from "@/utils/utils";
 import _ from "lodash";
 import { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Row, Stack } from "react-bootstrap";
+import { useParams } from "react-router";
 import { selectChat } from "../chat/chatSlice";
-import { selectGame } from "../game/gameSlice";
+import { actionGame, selectGame } from "../game/gameSlice";
 import { selectUsers } from "../user/usersSlice";
 import Avatar from "./components/Avatar";
 
@@ -94,11 +95,14 @@ const Player2Card = ({ data }: { data: PlayerData }) => {
 export default function LobbyContainer() {
   const { currentUser } = useAppSelector(selectUsers);
   const { usersStates } = useAppSelector(selectChat);
-  const { currentPlayForFunRoom } = useAppSelector(selectGame);
+  const { currentPlayForFunRoom, isConnected } = useAppSelector(selectGame);
   const [player1, setPlayer1] = useState(emptyPlayerData);
   const [player2, setPlayer2] = useState(emptyPlayerData);
+  const dispatch = useAppDispatch();
+  const { roomId } = useParams();
 
   useEffect(() => {
+    console.log(currentPlayForFunRoom);
     const players = currentPlayForFunRoom.players;
     const numOfPlayer = players.length;
 
@@ -147,6 +151,21 @@ export default function LobbyContainer() {
     }
   }, [currentPlayForFunRoom]);
 
+  useEffect(() => {
+    if (isConnected && roomId !== undefined) {
+      dispatch(actionGame.joinPlayForFunRoom(roomId));
+    }
+  }, [isConnected]);
+
+  const handleClickToAcceptRunningGame = () => {
+    dispatch(
+      actionGame.acceptRunningGame({
+        roomId: currentPlayForFunRoom._id,
+        isReady: !player1.isReady,
+      })
+    );
+  };
+
   return (
     <Container className="mt-5">
       <Row className="d-flex align-items-center">
@@ -164,10 +183,19 @@ export default function LobbyContainer() {
       </Row>
 
       <Row>
-        <Col className="d-flex justify-content-center mt-3">
-          {player1._id === currentUser._id && <Button>Ready</Button>}
-          <Button className="ms-2">Leave</Button>
-        </Col>
+        {currentPlayForFunRoom.isStarted || (
+          <Col className="d-flex justify-content-center mt-3">
+            {player1._id === currentUser._id && (
+              <Button
+                className="american-purple-btn"
+                onClick={handleClickToAcceptRunningGame}
+              >
+                {player1.isReady ? "Unready" : "Ready"}
+              </Button>
+            )}
+            <Button className="ms-2 american-purple-btn">Leave</Button>
+          </Col>
+        )}
       </Row>
     </Container>
   );

@@ -69,6 +69,14 @@ export const gameMiddleware: Middleware = (store) => {
         actionGame.resetCurrentPlayForFunRoom();
       }
 
+      if (actionGame.acceptRunningGame.match(action)) {
+        socket.emit(
+          "game:action:accept-running-game",
+          action.payload.roomId,
+          action.payload.isReady
+        );
+      }
+
       if (actionGame.requestDisconnectSocket.match(action)) {
         socket.removeAllListeners();
         socket.disconnect();
