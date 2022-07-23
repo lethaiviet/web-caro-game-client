@@ -132,17 +132,17 @@ export default function LobbyContainer() {
       return playerData;
     };
 
-    if (numOfPlayer == 0 || numOfPlayer > MAX_PLAYER) return;
+    if (numOfPlayer === 0 || numOfPlayer > MAX_PLAYER) return;
 
     if (
       roomId &&
-      numOfPlayer == MAX_PLAYER &&
+      numOfPlayer === MAX_PLAYER &&
       currentPlayForFunRoom.isStarted
     ) {
       navigate(_.replace(GAME, ROOM_ID_PARAM, roomId));
     }
 
-    if (numOfPlayer == 1) {
+    if (numOfPlayer === 1) {
       setPlayer1(getPlayerDataByIdx(0));
       setPlayer2(emptyPlayerData);
       return;

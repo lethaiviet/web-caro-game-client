@@ -1,5 +1,5 @@
 import { RootState } from "@/app/store";
-import { GameRoom } from "@/interfaces/game-rooms.interface";
+import { GameRoom, Position } from "@/interfaces/game-rooms.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface GameState {
@@ -10,13 +10,17 @@ interface GameState {
   errorMsg: string | null;
 }
 
-const emptyPlayForFunRoom = {
+const emptyPlayForFunRoom: GameRoom = {
   _id: "",
   name: "",
   createdAt: 0,
   players: [],
   spectators: [],
   isStarted: false,
+  turnOf: "",
+  boardGame: { data: [] },
+  timeOut: 0,
+  lastActionTime: 0,
 };
 
 const initialState: GameState = {
@@ -82,6 +86,13 @@ export const GameSlice = createSlice({
     },
 
     requestLeaveCurrentRoom(state: GameState) {
+      return;
+    },
+
+    playGame(
+      state: GameState,
+      action: PayloadAction<{ roomId: string; pos: Position }>
+    ) {
       return;
     },
   },

@@ -1,66 +1,125 @@
-import { getAvatarTemplate } from "@/utils/utils";
-import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/app/hook";
+import { usePlayersStates } from "@/hooks/usePlayersStates";
+import { Position, Symbol } from "@/interfaces/game-rooms.interface";
+import _ from "lodash";
+import React, { useEffect, useState } from "react";
 import { Card, Col, Container, Row, ProgressBar } from "react-bootstrap";
 import Scrollbars from "react-custom-scrollbars-2";
+import { useParams } from "react-router-dom";
 import Avatar from "./components/Avatar";
-import variables from "./variables.module.scss";
+import { actionGame, selectGame } from "./gameSlice";
 
-const initEmptyBoardGameData = () => {
-  const numRows = parseInt(variables["num-of-rows-grid"]);
-  const numCols = parseInt(variables["num-of-cols-grid"]);
-  let gridData = [];
-  for (let r = 0; r < numRows; r++) {
-    gridData[r] = Array(numCols).fill("");
-  }
-  return gridData;
+const ProgressBarTimer = () => {
+  const { currentPlayForFunRoom } = useAppSelector(selectGame);
+  const [timer, setTimer] = useState(0);
+
+  const getProgressType = () => {
+    const lowerBound = currentPlayForFunRoom.timeOut / 3;
+    const isSuccess = _.inRange(timer, lowerBound);
+    if (isSuccess) return "success";
+
+    const upperBound = lowerBound * 2;
+    const isWarning = _.inRange(timer, lowerBound, upperBound);
+    if (isWarning) return "warning";
+
+    return "danger";
+  };
+
+  useEffect(() => {
+    const gameRoom = currentPlayForFunRoom;
+
+    if (gameRoom.timeOut === 0) return;
+    const lastActionTime =
+      gameRoom.lastActionTime === 0 ? _.now() : gameRoom.lastActionTime;
+
+    const timeElapsed = _.floor((_.now() - lastActionTime) / 1000);
+
+    setTimer((timer) => timeElapsed);
+    const interval = setInterval(() => setTimer((timer) => timer + 1), 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [currentPlayForFunRoom]);
+
+  return (
+    <ProgressBar
+      variant={getProgressType()}
+      now={timer}
+      max={currentPlayForFunRoom.timeOut}
+      label={timer}
+    />
+  );
+};
+
+const GameHeader = () => {
+  const { roomId } = useParams();
+  const [player1, player2] = usePlayersStates(roomId || "");
+
+  return (
+    <Row className="d-flex align-items-center my-2">
+      <Col lg={3} md={2} sm={2} xs={2}>
+        <Card
+          className={player1.isMyTurn ? "selected-card" : "unSelected-card"}
+        >
+          <Row className="d-flex justify-content-start align-items-center">
+            <Col className="d-none d-lg-block">
+              <h5 className="text-center">
+                {_.truncate(player1.name, { length: 14 })}
+              </h5>
+            </Col>
+            <Col lg={3} className="d-flex justify-content-center">
+              <Avatar src={player1.avatar} />
+            </Col>
+          </Row>
+        </Card>
+      </Col>
+
+      <Col>
+        <ProgressBarTimer />
+      </Col>
+
+      <Col lg={3} md={2} sm={2} xs={2}>
+        <Card
+          className={player2.isMyTurn ? "selected-card" : "unSelected-card"}
+        >
+          <Row className="d-flex justify-content-start align-items-center">
+            <Col lg={3} className="d-flex justify-content-center">
+              <Avatar src={player2.avatar} />
+            </Col>
+            <Col className="d-none d-lg-block">
+              <h5 className="text-center">
+                {_.truncate(player2.name, { length: 14 })}
+              </h5>
+            </Col>
+          </Row>
+        </Card>
+      </Col>
+    </Row>
+  );
 };
 
 export default function GameContainer() {
-  const [boardGameData, setBoardGameData] = useState(initEmptyBoardGameData());
+  const [boardGameData, setBoardGameData] = useState<string[][]>([]);
+  const { currentPlayForFunRoom } = useAppSelector(selectGame);
+  const dispatch = useAppDispatch();
+
+  const handleClickToPlayGame = (e: React.MouseEvent<HTMLDivElement>) => {
+    const c = _.toNumber(e.currentTarget.getAttribute("data-col"));
+    const r = _.toNumber(e.currentTarget.getAttribute("data-row"));
+    const pos: Position = { r, c };
+    const roomId = currentPlayForFunRoom._id;
+    dispatch(actionGame.playGame({ roomId, pos }));
+  };
+
+  useEffect(() => {
+    const data = currentPlayForFunRoom.boardGame.data;
+    setBoardGameData(data);
+  }, [currentPlayForFunRoom]);
 
   return (
     <Container className="vh-100">
-      <Row className="d-flex align-items-center my-2">
-        <Col lg={3} md={2} sm={2} xs={2}>
-          <Card border="dark" className="p-2" style={{ borderRadius: "10px" }}>
-            <Row className="d-flex justify-content-start align-items-center">
-              <Col className="d-none d-lg-block">
-                <h5 className="text-center">
-                  {"lethaiviet92123456789".slice(0, 10) + "..."}
-                </h5>
-              </Col>
-              <Col lg={3} className="d-flex justify-content-center">
-                <Avatar src={getAvatarTemplate("A", 100)} />
-              </Col>
-            </Row>
-          </Card>
-        </Col>
-
-        <Col>
-          <ProgressBar
-            variant="success"
-            now={30}
-            min={10}
-            label={`30s`}
-            key={1}
-          />
-        </Col>
-
-        <Col lg={3} md={2} sm={2} xs={2}>
-          <Card border="dark" className="p-2" style={{ borderRadius: "10px" }}>
-            <Row className="d-flex justify-content-start align-items-center">
-              <Col lg={3} className="d-flex justify-content-center">
-                <Avatar src={getAvatarTemplate("A", 100)} />
-              </Col>
-              <Col className="d-none d-lg-block">
-                <h5 className="text-center">
-                  {"lethaiviet92123456789".slice(0, 10) + "..."}
-                </h5>
-              </Col>
-            </Row>
-          </Card>
-        </Col>
-      </Row>
+      <GameHeader />
 
       <div className="scroll-bar-board-game">
         <Scrollbars
@@ -79,9 +138,9 @@ export default function GameContainer() {
           )}
         >
           <div className="board-game-10x20">
-            {boardGameData.map((rowData) =>
-              rowData.map((cell) => {
-                if (cell === "o") {
+            {boardGameData.map((rowData, r) =>
+              rowData.map((cell, c) => {
+                if (cell === Symbol.O) {
                   return (
                     <div className="cell">
                       <div className="O-symbol center" />
@@ -89,7 +148,7 @@ export default function GameContainer() {
                   );
                 }
 
-                if (cell === "x") {
+                if (cell === Symbol.X) {
                   return (
                     <div className="cell">
                       <div className="X-symbol center" />
@@ -98,7 +157,14 @@ export default function GameContainer() {
                   );
                 }
 
-                return <div className="cell" />;
+                return (
+                  <div
+                    className="cell"
+                    data-row={r}
+                    data-col={c}
+                    onClick={handleClickToPlayGame}
+                  />
+                );
               })
             )}
           </div>

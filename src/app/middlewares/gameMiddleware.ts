@@ -77,6 +77,14 @@ export const gameMiddleware: Middleware = (store) => {
         );
       }
 
+      if (actionGame.playGame.match(action)) {
+        socket.emit(
+          "game:action:play-game",
+          action.payload.roomId,
+          action.payload.pos
+        );
+      }
+
       if (actionGame.requestDisconnectSocket.match(action)) {
         socket.removeAllListeners();
         socket.disconnect();

@@ -1,6 +1,7 @@
 @import "./variables.module";
 
-$cell-size: 40px;
+// $cell-size: 40px;
+$cell-size: Clamp(30px, calc(75vh / #{$num-of-rows-grid}), 50px);
 
 $cell-color: #1f3540;
 $background-color: #192a32;
@@ -12,8 +13,6 @@ $height-line-X: calc(#{$cell-size} / 5.5);
 $O-color: #eeb338;
 $width-O: calc(#{$width-line-X} - #{$height-line-X} / 2);
 $border-size-O: $height-line-X;
-// $scroll-bar-board-game-height: calc(80vh + 25px);
-// $scroll-bar-board-game-width: calc(80vw + 25px);
 
 .board-game-10x20 {
   display: grid;
@@ -98,4 +97,37 @@ $border-size-O: $height-line-X;
   left: 2px;
   bottom: 2px;
   border-radius: 3px;
+}
+
+.selected-card {
+  --border-width: 5px;
+  border-radius: 10px;
+  padding: 10px;
+
+  &::after {
+    position: absolute;
+    content: "";
+    top: calc(-1 * var(--border-width));
+    left: calc(-1 * var(--border-width));
+    z-index: -1;
+    width: calc(100% + var(--border-width) * 2);
+    height: calc(100% + var(--border-width) * 2);
+    background: linear-gradient(60deg, #00416a, #e4e5e6);
+    background-size: 300% 300%;
+    background-position: 0 50%;
+    border-radius: calc(2 * var(--border-width));
+    animation: moveGradient 5s alternate infinite;
+  }
+}
+
+.unSelected-card {
+  border: #00416a solid 1px;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+@keyframes moveGradient {
+  50% {
+    background-position: 100% 50%;
+  }
 }

@@ -27,14 +27,14 @@ function RootConfig() {
     <div>
       <Routes>
         <Route element={<PrivateRoot />}>
-        <Route path={ROOT} element={<Header />}>
-          <Route path={CHAT} element={<Chat />} />
-          <Route path={ROOT} element={<Home />} />
-          <Route path={USER_PROFILE} element={<UserProfile />} />
-          <Route path={PLAY_FOR_FUN} element={<PlayForFun />} />
-          <Route path={LOBBY} element={<Lobby />} />
-        </Route>
-        <Route path={GAME} element={<Game />} />
+          <Route path={ROOT} element={<Header />}>
+            <Route path={CHAT} element={<Chat />} />
+            <Route path={ROOT} element={<Home />} />
+            <Route path={USER_PROFILE} element={<UserProfile />} />
+            <Route path={PLAY_FOR_FUN} element={<PlayForFun />} />
+            <Route path={LOBBY} element={<Lobby />} />
+          </Route>
+          <Route path={GAME} element={<Game />} />
         </Route>
 
         <Route path={LOGIN} element={<Auth />} />
