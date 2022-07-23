@@ -85,6 +85,13 @@ export const gameMiddleware: Middleware = (store) => {
         );
       }
 
+      if (actionGame.requestCheckPlayerAFKAndSwitchTurn.match(action)) {
+        socket.emit(
+          "game:action:check-player-afk-and-switch-turn",
+          action.payload
+        );
+      }
+
       if (actionGame.requestDisconnectSocket.match(action)) {
         socket.removeAllListeners();
         socket.disconnect();

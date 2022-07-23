@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useConnectSocket } from "./useConnectSocket";
 
-interface PlayerDetail extends Player {
+export interface PlayerDetail extends Player {
   isMyTurn: boolean;
   name: string;
   avatar: string;

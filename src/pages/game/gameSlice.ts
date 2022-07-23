@@ -81,6 +81,13 @@ export const GameSlice = createSlice({
       return;
     },
 
+    requestCheckPlayerAFKAndSwitchTurn(
+      state: GameState,
+      action: PayloadAction<string>
+    ) {
+      return;
+    },
+
     requestDisconnectSocket(state: GameState) {
       return;
     },

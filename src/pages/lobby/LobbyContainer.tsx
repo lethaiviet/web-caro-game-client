@@ -1,31 +1,13 @@
 import { useAppDispatch, useAppSelector } from "@/app/hook";
-import { UserStates } from "@/interfaces/users.interface";
-import { GAME, ROOM_ID_PARAM } from "@/navigation/const";
-import { getAvatarTemplate } from "@/utils/utils";
+import { PlayerDetail, usePlayersStates } from "@/hooks/usePlayersStates";
 import _ from "lodash";
-import { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Row, Stack } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router";
-import { selectChat } from "../chat/chatSlice";
+import { useParams } from "react-router";
 import { actionGame, selectGame } from "../game/gameSlice";
 import { selectUsers } from "../user/usersSlice";
 import Avatar from "./components/Avatar";
 
-interface PlayerData {
-  _id: string;
-  name: string;
-  avatar: string;
-  isReady: boolean;
-}
-
-const emptyPlayerData: PlayerData = {
-  _id: "",
-  name: "",
-  avatar: "",
-  isReady: false,
-};
-
-const Player1Card = ({ data }: { data: PlayerData }) => {
+const Player1Card = ({ data }: { data: PlayerDetail }) => {
   return (
     <Card border="dark" className="lobby-card">
       <Row>
@@ -59,7 +41,7 @@ const Player1Card = ({ data }: { data: PlayerData }) => {
   );
 };
 
-const Player2Card = ({ data }: { data: PlayerData }) => {
+const Player2Card = ({ data }: { data: PlayerDetail }) => {
   return (
     <Card border="dark" className="lobby-card">
       <Row>
@@ -95,76 +77,10 @@ const Player2Card = ({ data }: { data: PlayerData }) => {
 
 export default function LobbyContainer() {
   const { currentUser } = useAppSelector(selectUsers);
-  const { usersStates } = useAppSelector(selectChat);
   const { roomId } = useParams();
-  const { currentPlayForFunRoom, isConnected } = useAppSelector(selectGame);
-  const [player1, setPlayer1] = useState(emptyPlayerData);
-  const [player2, setPlayer2] = useState(emptyPlayerData);
+  const [player1, player2] = usePlayersStates(_.defaultTo(roomId, ""));
+  const { currentPlayForFunRoom } = useAppSelector(selectGame);
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const players = currentPlayForFunRoom.players;
-    const numOfPlayer = players.length;
-    const MAX_PLAYER = 2;
-
-    const getPlayerDataByIdx = (idx: number): PlayerData => {
-      idx = Math.min(idx, MAX_PLAYER);
-      const player = players[idx];
-
-      const playerState: UserStates | undefined = _.find(usersStates, [
-        "_id",
-        player._id,
-      ]);
-
-      const playerData: PlayerData = {
-        _id: player._id,
-        name: playerState?.name || "",
-        avatar: playerState?.avatar || "",
-        isReady: player.isReady,
-      };
-
-      playerData.avatar =
-        playerData.avatar === ""
-          ? getAvatarTemplate(playerData.name, 100)
-          : playerData.avatar;
-
-      return playerData;
-    };
-
-    if (numOfPlayer === 0 || numOfPlayer > MAX_PLAYER) return;
-
-    if (
-      roomId &&
-      numOfPlayer === MAX_PLAYER &&
-      currentPlayForFunRoom.isStarted
-    ) {
-      navigate(_.replace(GAME, ROOM_ID_PARAM, roomId));
-    }
-
-    if (numOfPlayer === 1) {
-      setPlayer1(getPlayerDataByIdx(0));
-      setPlayer2(emptyPlayerData);
-      return;
-    }
-
-    const currentPlayerIdx = _.findIndex(players, ["_id", currentUser._id]);
-    const hasCurrentUserIdInPlayers = currentPlayerIdx >= 0;
-
-    if (hasCurrentUserIdInPlayers) {
-      setPlayer1(getPlayerDataByIdx(currentPlayerIdx));
-      setPlayer2(getPlayerDataByIdx(1 ^ currentPlayerIdx));
-    } else {
-      setPlayer1(getPlayerDataByIdx(0));
-      setPlayer2(getPlayerDataByIdx(1));
-    }
-  }, [currentPlayForFunRoom]);
-
-  useEffect(() => {
-    if (isConnected && roomId) {
-      dispatch(actionGame.joinPlayForFunRoom(roomId));
-    }
-  }, [isConnected]);
 
   const handleClickToAcceptRunningGame = () => {
     dispatch(

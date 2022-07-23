@@ -12,6 +12,7 @@ import { actionGame, selectGame } from "./gameSlice";
 const ProgressBarTimer = () => {
   const { currentPlayForFunRoom } = useAppSelector(selectGame);
   const [timer, setTimer] = useState(0);
+  const dispatch = useAppDispatch();
 
   const getProgressType = () => {
     const lowerBound = currentPlayForFunRoom.timeOut / 3;
@@ -41,6 +42,15 @@ const ProgressBarTimer = () => {
       clearInterval(interval);
     };
   }, [currentPlayForFunRoom]);
+
+  useEffect(() => {
+    const gameRoom = currentPlayForFunRoom;
+    if (gameRoom.timeOut !== 0 && timer <= gameRoom.timeOut) return;
+
+    dispatch(
+      actionGame.requestCheckPlayerAFKAndSwitchTurn(currentPlayForFunRoom._id)
+    );
+  });
 
   return (
     <ProgressBar
