@@ -1,7 +1,6 @@
-import { useAppDispatch, useAppSelector } from "@/app/hook";
+import { useAppDispatch } from "@/app/hook";
 import { GameRoom } from "@/interfaces/game-rooms.interface";
 import { UserStates } from "@/interfaces/users.interface";
-import { selectChat } from "@/pages/chat/chatSlice";
 import { getAvatarTemplate } from "@/utils/utils";
 import { useEffect, useState } from "react";
 import { Button, Card, Stack, Row, Col } from "react-bootstrap";
@@ -9,6 +8,7 @@ import Avatar from "./Avatar";
 import { PersonCircle } from "react-bootstrap-icons";
 import _ from "lodash";
 import { actionGame } from "@/pages/game/gameSlice";
+import { useUsersStates } from "@/hooks/useUsersStates";
 
 const PlayersInfoSection = ({ data }: { data: UserStates[] }) => {
   const numOfPlayer = data.length;
@@ -49,7 +49,7 @@ const PlayersInfoSection = ({ data }: { data: UserStates[] }) => {
 
 export default function RoomCard({ data }: { data: GameRoom }) {
   const [players, setPlayers] = useState<UserStates[]>([]);
-  const { usersStates } = useAppSelector(selectChat);
+  const usersStates = useUsersStates();
   const dispatch = useAppDispatch();
 
   const handleClickToJoinRoom = () => {
@@ -61,7 +61,7 @@ export default function RoomCard({ data }: { data: GameRoom }) {
       _.some(data.players, ["_id", x._id])
     );
     setPlayers(findPlayers);
-  }, [data]);
+  }, [data, usersStates]);
 
   return (
     <Card border="dark" style={{ borderRadius: "20px" }} className="font-round">

@@ -40,6 +40,7 @@ export default function PlayForFunContainer() {
     if (currentPlayForFunRoom._id !== "") {
       navigate(_.replace(LOBBY, ROOM_ID_PARAM, currentPlayForFunRoom._id));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPlayForFunRoom]);
 
   const handleClickToCreateRoom = () => {

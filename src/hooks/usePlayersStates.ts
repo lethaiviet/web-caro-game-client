@@ -2,7 +2,6 @@ import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { Player, Symbol } from "@/interfaces/game-rooms.interface";
 import { UserStates } from "@/interfaces/users.interface";
 import { GAME, ROOM_ID_PARAM } from "@/navigation/const";
-import { actionChat, selectChat } from "@/pages/chat/chatSlice";
 import { actionGame, selectGame } from "@/pages/game/gameSlice";
 import { selectUsers } from "@/pages/user/usersSlice";
 import { getCurrentUser } from "@/pages/user/usersThunk";
@@ -11,6 +10,7 @@ import _ from "lodash";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useConnectSocket } from "./useConnectSocket";
+import { useUsersStates } from "./useUsersStates";
 
 export interface PlayerDetail extends Player {
   isMyTurn: boolean;
@@ -34,7 +34,7 @@ export const usePlayersStates = (roomId: string): PlayerDetail[] => {
   const [player1, setPlayer1] = useState(emptyPlayerDetail);
   const [player2, setPlayer2] = useState(emptyPlayerDetail);
   const { currentPlayForFunRoom } = useAppSelector(selectGame);
-  const { usersStates } = useAppSelector(selectChat);
+  const usersStates = useUsersStates();
   const { currentUser } = useAppSelector(selectUsers);
 
   useEffect(() => {
@@ -107,11 +107,7 @@ export const usePlayersStates = (roomId: string): PlayerDetail[] => {
     if (isConnected && currentUser._id === "") {
       dispatch(getCurrentUser("_"));
     }
-
-    if (isConnected && usersStates.length === 0) {
-      dispatch(actionChat.requestGetAllUsersState());
-    }
-  }, [currentUser._id, dispatch, isConnected, roomId, usersStates.length]);
+  }, [currentUser._id, dispatch, isConnected, roomId]);
 
   return [player1, player2];
 };
