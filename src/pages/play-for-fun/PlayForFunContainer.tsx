@@ -17,7 +17,8 @@ import noRoomImage from "@assets/no-rooms.png";
 import { useNavigate } from "react-router";
 import { LOBBY, ROOM_ID_PARAM } from "@/navigation/const";
 import _ from "lodash";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { selectUsers } from "../user/usersSlice";
 
 const EmptyFromView = () => {
   return (
@@ -35,6 +36,8 @@ export default function PlayForFunContainer() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { playForFunRooms, currentPlayForFunRoom } = useAppSelector(selectGame);
+  const { currentUser } = useAppSelector(selectUsers);
+  const [disableCreateRoomBtn, setDisableCreateRoomBtn] = useState(false);
 
   useEffect(() => {
     if (currentPlayForFunRoom._id !== "") {
@@ -42,6 +45,23 @@ export default function PlayForFunContainer() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPlayForFunRoom]);
+
+  useEffect(() => {
+    if (playForFunRooms.length > 0 || currentUser._id !== "") {
+      const findRoomJoinedIdx = playForFunRooms.findIndex((room) =>
+        _.find(room.players, { _id: currentUser._id })
+      );
+
+      const isJoinedAnyRoom = findRoomJoinedIdx >= 0;
+      setDisableCreateRoomBtn(isJoinedAnyRoom);
+
+      if (isJoinedAnyRoom) {
+        dispatch(
+          actionGame.joinPlayForFunRoom(playForFunRooms[findRoomJoinedIdx]._id)
+        );
+      }
+    }
+  }, [playForFunRooms, currentUser]);
 
   const handleClickToCreateRoom = () => {
     const dispatchCreateRoom = async () => {
@@ -68,7 +88,7 @@ export default function PlayForFunContainer() {
             <Button
               className="d-flex align-items-center american-purple-btn"
               onClick={handleClickToCreateRoom}
-              disabled={currentPlayForFunRoom._id !== ""}
+              disabled={disableCreateRoomBtn}
             >
               <PlusCircle className="me-2" size={20} />
               Create New Room

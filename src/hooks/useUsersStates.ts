@@ -10,7 +10,7 @@ export const useUsersStates = () => {
     if (isConnected && useUsersStates.length === 0) {
       dispatch(actionChat.requestGetAllUsersState());
     }
-  }, [dispatch, isConnected, usersStates]);
+  }, [isConnected]);
 
   return usersStates;
 };
