@@ -47,14 +47,14 @@ export default function PlayForFunContainer() {
     const word = _.trim(wordSearch);
     const isEmptyWordSearch = word === "";
 
-    if (isEmptyWordSearch) {
-      setFilteredRoomsData(playForFunRooms);
-      return;
+    let roomsData = playForFunRooms;
+
+    if (!isEmptyWordSearch) {
+      roomsData = playForFunRooms.filter(
+        (room) => room._id.includes(word) || room.name.includes(word)
+      );
     }
 
-    const roomsData = playForFunRooms.filter(
-      (room) => room._id.includes(word) || room.name.includes(word)
-    );
     setFilteredRoomsData(roomsData);
   }, [wordSearch, playForFunRooms]);
 
@@ -62,7 +62,8 @@ export default function PlayForFunContainer() {
     const notFoundRoom = currentPlayForFunRoom._id === "";
     if (notFoundRoom) return;
 
-    navigate(_.replace(LOBBY, ROOM_ID_PARAM, currentPlayForFunRoom._id));
+    const lobyUrl = _.replace(LOBBY, ROOM_ID_PARAM, currentPlayForFunRoom._id);
+    navigate(lobyUrl);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPlayForFunRoom]);

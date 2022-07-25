@@ -66,7 +66,6 @@ export const gameMiddleware: Middleware = (store) => {
 
       if (actionGame.requestLeaveCurrentRoom.match(action)) {
         socket.emit("game:action:leave-current-room");
-        actionGame.resetCurrentPlayForFunRoom();
       }
 
       if (actionGame.acceptRunningGame.match(action)) {

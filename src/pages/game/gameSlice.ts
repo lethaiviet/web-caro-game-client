@@ -1,6 +1,7 @@
 import { RootState } from "@/app/store";
 import { GameRoom, Position } from "@/interfaces/game-rooms.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import _ from "lodash";
 
 interface GameState {
   isConnecting: boolean;
@@ -57,13 +58,8 @@ export const GameSlice = createSlice({
         : null;
 
       if (state.errorMsg === null) {
-        console.log("setCurrentPlayForFunRoom");
         state.currentPlayForFunRoom = action.payload.gameRoom;
       }
-    },
-
-    resetCurrentPlayForFunRoom(state: GameState) {
-      state.currentPlayForFunRoom = emptyPlayForFunRoom;
     },
 
     acceptRunningGame(
@@ -92,8 +88,30 @@ export const GameSlice = createSlice({
       return;
     },
 
-    requestLeaveCurrentRoom(state: GameState) {
-      return;
+    requestLeaveCurrentRoom(
+      state: GameState,
+      action: PayloadAction<{ roomId: string; currentUserId: string }>
+    ) {
+      const roomId = action.payload.roomId;
+      const currentUserId = action.payload.currentUserId;
+
+      state.playForFunRooms = state.playForFunRooms
+        .map((room) => {
+          if (roomId !== room._id) return room;
+
+          _.remove(room.players, (player) => {
+            return player._id === currentUserId;
+          });
+
+          _.remove(room.spectators, (spectatorId) => {
+            return spectatorId === currentUserId;
+          });
+
+          return room;
+        })
+        .filter((room) => room.players.length > 0);
+
+      state.currentPlayForFunRoom = emptyPlayForFunRoom;
     },
 
     playGame(

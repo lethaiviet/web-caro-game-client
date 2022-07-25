@@ -10,6 +10,8 @@ export const useUsersStates = () => {
     if (isConnected && useUsersStates.length === 0) {
       dispatch(actionChat.requestGetAllUsersState());
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected]);
 
   return usersStates;

@@ -1,8 +1,9 @@
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { PlayerDetail, usePlayersStates } from "@/hooks/usePlayersStates";
+import { PLAY_FOR_FUN, ROOT } from "@/navigation/const";
 import _ from "lodash";
 import { Button, Card, Col, Container, Row, Stack } from "react-bootstrap";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { actionGame, selectGame } from "../game/gameSlice";
 import { selectUsers } from "../user/usersSlice";
 import Avatar from "./components/Avatar";
@@ -76,11 +77,12 @@ const Player2Card = ({ data }: { data: PlayerDetail }) => {
 };
 
 export default function LobbyContainer() {
-  const { currentUser } = useAppSelector(selectUsers);
   const { roomId } = useParams();
-  const [player1, player2] = usePlayersStates(_.defaultTo(roomId, ""));
-  const { currentPlayForFunRoom } = useAppSelector(selectGame);
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { currentUser } = useAppSelector(selectUsers);
+  const { currentPlayForFunRoom } = useAppSelector(selectGame);
+  const [player1, player2] = usePlayersStates(_.defaultTo(roomId, ""));
 
   const handleClickToAcceptRunningGame = () => {
     dispatch(
@@ -89,6 +91,16 @@ export default function LobbyContainer() {
         isReady: !player1.isReady,
       })
     );
+  };
+
+  const handleClickToLeaveGameRoom = () => {
+    dispatch(
+      actionGame.requestLeaveCurrentRoom({
+        roomId: _.defaultTo(roomId, ""),
+        currentUserId: currentUser._id,
+      })
+    );
+    navigate(PLAY_FOR_FUN);
   };
 
   return (
@@ -118,7 +130,15 @@ export default function LobbyContainer() {
                 {player1.isReady ? "Unready" : "Ready"}
               </Button>
             )}
-            <Button className="ms-2 american-purple-btn">Leave</Button>
+
+            {(currentUser._id === player1._id && player1.isReady) || (
+              <Button
+                className="ms-2 american-purple-btn"
+                onClick={handleClickToLeaveGameRoom}
+              >
+                Leave
+              </Button>
+            )}
           </Col>
         )}
       </Row>
