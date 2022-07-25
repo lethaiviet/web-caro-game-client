@@ -79,7 +79,7 @@ export default function RoomCard({ data }: { data: GameRoom }) {
               {players.length < 2 ? "Join" : "Spectate"}
             </Button>
           </Col>
-          <Col xs={{ span: 4, offset: 4 }}>
+          <Col xs={{ span: 4, offset: 3 }}>
             <PlayersInfoSection data={players} />
           </Col>
         </Row>

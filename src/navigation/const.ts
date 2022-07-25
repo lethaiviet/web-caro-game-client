@@ -8,6 +8,7 @@ export const PLAY_FOR_FUN = "/play-for-fun";
 export const LOBBY = "/lobby/" + ROOM_ID_PARAM;
 export const GAME = "/game/" + ROOM_ID_PARAM;
 export const ERROR_500 = "/500";
+export const ERROR_400 = "/400";
 export const OTHERS = "/*";
 export const PAGES_NAME_MAP = {
   [ROOT]: "Home",

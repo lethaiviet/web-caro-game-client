@@ -51,9 +51,12 @@ export default function HomeContainer() {
             </SelectGameModeCard>
           </Col>
 
-          <Button className="american-purple-btn d-block d-md-none mb-3">
+          <Link
+            className="american-purple-btn d-block d-md-none mb-3"
+            to={PLAY_FOR_FUN}
+          >
             Play For Fun
-          </Button>
+          </Link>
           <Button className="american-purple-btn d-block d-md-none">
             Play Rank
           </Button>

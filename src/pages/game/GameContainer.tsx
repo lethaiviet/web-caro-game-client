@@ -1,18 +1,21 @@
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { usePlayersStates } from "@/hooks/usePlayersStates";
 import { Position, Symbol } from "@/interfaces/game-rooms.interface";
+import { ERROR_400 } from "@/navigation/const";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import { Card, Col, Container, Row, ProgressBar } from "react-bootstrap";
 import Scrollbars from "react-custom-scrollbars-2";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import Loading from "../loading";
 import Avatar from "./components/Avatar";
 import { actionGame, selectGame } from "./gameSlice";
 
 const ProgressBarTimer = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { currentPlayForFunRoom } = useAppSelector(selectGame);
   const [timer, setTimer] = useState(0);
-  const dispatch = useAppDispatch();
 
   const getProgressType = () => {
     const lowerBound = currentPlayForFunRoom.timeOut / 3;
@@ -47,10 +50,17 @@ const ProgressBarTimer = () => {
     const gameRoom = currentPlayForFunRoom;
     if (gameRoom.timeOut !== 0 && timer <= gameRoom.timeOut) return;
 
+    const isLostConnection = timer >= gameRoom.timeOut + 2;
+    if (isLostConnection) {
+      navigate(ERROR_400);
+    }
+
     dispatch(
       actionGame.requestCheckPlayerAFKAndSwitchTurn(currentPlayForFunRoom._id)
     );
-  });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timer]);
 
   return (
     <ProgressBar
@@ -110,9 +120,11 @@ const GameHeader = () => {
 };
 
 export default function GameContainer() {
-  const [boardGameData, setBoardGameData] = useState<string[][]>([]);
-  const { currentPlayForFunRoom } = useAppSelector(selectGame);
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { currentPlayForFunRoom } = useAppSelector(selectGame);
+  const [loading, setLoading] = useState(true);
+  const [boardGameData, setBoardGameData] = useState<string[][]>([]);
 
   const handleClickToPlayGame = (e: React.MouseEvent<HTMLDivElement>) => {
     const c = _.toNumber(e.currentTarget.getAttribute("data-col"));
@@ -123,6 +135,19 @@ export default function GameContainer() {
   };
 
   useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (loading) {
+      timer = setTimeout(() => {
+        navigate(ERROR_400);
+      }, 2000);
+    }
+    return () => timer && clearTimeout(timer);
+  });
+
+  useEffect(() => {
+    const notFoundRoom = currentPlayForFunRoom._id === "";
+    setLoading(notFoundRoom);
+
     const data = currentPlayForFunRoom.boardGame.data;
     setBoardGameData(data);
   }, [currentPlayForFunRoom]);
@@ -180,6 +205,8 @@ export default function GameContainer() {
           </div>
         </Scrollbars>
       </div>
+
+      {loading && <Loading />}
     </Container>
   );
 }

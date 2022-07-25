@@ -1,10 +1,12 @@
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { PlayerDetail, usePlayersStates } from "@/hooks/usePlayersStates";
-import { PLAY_FOR_FUN, ROOT } from "@/navigation/const";
+import { ERROR_400, PLAY_FOR_FUN } from "@/navigation/const";
 import _ from "lodash";
+import { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Row, Stack } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router";
 import { actionGame, selectGame } from "../game/gameSlice";
+import Loading from "../loading";
 import { selectUsers } from "../user/usersSlice";
 import Avatar from "./components/Avatar";
 
@@ -83,6 +85,22 @@ export default function LobbyContainer() {
   const { currentUser } = useAppSelector(selectUsers);
   const { currentPlayForFunRoom } = useAppSelector(selectGame);
   const [player1, player2] = usePlayersStates(_.defaultTo(roomId, ""));
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const notFoundPlayer1 = player1._id === "";
+    setLoading(notFoundPlayer1);
+  }, [player1]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (loading) {
+      timer = setTimeout(() => {
+        navigate(ERROR_400);
+      }, 2000);
+    }
+    return () => timer && clearTimeout(timer);
+  });
 
   const handleClickToAcceptRunningGame = () => {
     dispatch(
@@ -131,7 +149,7 @@ export default function LobbyContainer() {
               </Button>
             )}
 
-            {(currentUser._id === player1._id && player1.isReady) || (
+            {(player1._id === currentUser._id && player1.isReady) || (
               <Button
                 className="ms-2 american-purple-btn"
                 onClick={handleClickToLeaveGameRoom}
@@ -142,6 +160,8 @@ export default function LobbyContainer() {
           </Col>
         )}
       </Row>
+
+      {loading && <Loading />}
     </Container>
   );
 }

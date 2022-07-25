@@ -18,6 +18,8 @@ import _ from "lodash";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { selectUsers } from "../user/usersSlice";
 import RoomsCardList from "./components/RoomCardsList";
+import { useConnectSocket } from "@/hooks/useConnectSocket";
+import Loading from "../loading";
 
 const EmptyFromView = () => {
   return (
@@ -34,9 +36,11 @@ const EmptyFromView = () => {
 export default function PlayForFunContainer() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const isConnected = useConnectSocket();
   const { playForFunRooms, currentPlayForFunRoom } = useAppSelector(selectGame);
   const { currentUser } = useAppSelector(selectUsers);
   const [disableCreateRoomBtn, setDisableCreateRoomBtn] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [filteredRoomsData, setFilteredRoomsData] = useState(playForFunRooms);
   const [wordSearch, setWordSearch] = useState("");
 
@@ -69,6 +73,8 @@ export default function PlayForFunContainer() {
   }, [currentPlayForFunRoom]);
 
   useEffect(() => {
+    setLoading(!isConnected);
+
     const notFoundUser = currentUser._id === "";
     const hasNoRoom = playForFunRooms.length === 0;
 
@@ -82,13 +88,14 @@ export default function PlayForFunContainer() {
     setDisableCreateRoomBtn(isJoinedAnyRoom);
 
     if (isJoinedAnyRoom) {
+      setLoading(true);
       dispatch(
         actionGame.joinPlayForFunRoom(playForFunRooms[findRoomJoinedIdx]._id)
       );
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playForFunRooms, currentUser]);
+  }, [playForFunRooms, currentUser, isConnected]);
 
   const handleClickToCreateRoom = () => {
     dispatch(actionGame.createPlayForFunRoom());
@@ -100,39 +107,45 @@ export default function PlayForFunContainer() {
   };
 
   return (
-    <Container>
-      <Stack className="full-screen-height">
-        <Row className="my-3">
-          <Col>
-            <InputGroup>
-              <InputGroup.Text>Search</InputGroup.Text>
-              <Form.Control
-                name="wordSearch"
-                placeholder="Room name or Room Id"
-                aria-label="room-name"
-                value={wordSearch}
-                onChange={handleChangeWordSearch}
-              />
-            </InputGroup>
-          </Col>
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <Container>
+          <Stack className="full-screen-height">
+            <Row className="my-3">
+              <Col>
+                <InputGroup>
+                  <InputGroup.Text>Search</InputGroup.Text>
+                  <Form.Control
+                    name="wordSearch"
+                    placeholder="Room name or Room Id"
+                    aria-label="room-name"
+                    value={wordSearch}
+                    onChange={handleChangeWordSearch}
+                  />
+                </InputGroup>
+              </Col>
 
-          <Col className="d-flex justify-content-end">
-            <Button
-              className="d-flex align-items-center american-purple-btn"
-              onClick={handleClickToCreateRoom}
-              disabled={disableCreateRoomBtn}
-            >
-              <PlusCircle className="me-2" size={20} />
-              Create New Room
-            </Button>
-          </Col>
-        </Row>
+              <Col className="d-flex justify-content-end">
+                <Button
+                  className="d-flex align-items-center american-purple-btn"
+                  onClick={handleClickToCreateRoom}
+                  disabled={disableCreateRoomBtn}
+                >
+                  <PlusCircle className="me-2" size={20} />
+                  Create New Room
+                </Button>
+              </Col>
+            </Row>
 
-        {playForFunRooms.length === 0 && <EmptyFromView />}
-        {playForFunRooms.length > 0 && (
-          <RoomsCardList roomsData={filteredRoomsData} />
-        )}
-      </Stack>
-    </Container>
+            {playForFunRooms.length === 0 && <EmptyFromView />}
+            {playForFunRooms.length > 0 && (
+              <RoomsCardList roomsData={filteredRoomsData} />
+            )}
+          </Stack>
+        </Container>
+      )}
+    </>
   );
 }

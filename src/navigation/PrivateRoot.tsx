@@ -4,8 +4,8 @@ import { checkAccessToken } from "@/pages/auth/authThunk";
 import { Navigate, Outlet } from "react-router-dom";
 import { LOGIN } from "./const";
 import { useEffect, useState } from "react";
-import { Container, Spinner } from "react-bootstrap";
 import StorageService, { SECTION_ITEMS } from "@/services/storage.service";
+import Loading from "@/pages/loading";
 
 export function PrivateRoot() {
   const { authorized } = useAppSelector(selectAuth);
@@ -33,9 +33,7 @@ export function PrivateRoot() {
   return authorized || isAuth ? (
     <Outlet />
   ) : loading ? (
-    <Container className="d-flex justify-content-center align-items-center vh-100">
-      <Spinner animation="grow"></Spinner>
-    </Container>
+    <Loading />
   ) : (
     <Navigate to={LOGIN} />
   );

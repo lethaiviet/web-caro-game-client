@@ -118,11 +118,7 @@ function Header() {
 
     useEffect(() => {
         if (currentUser._id === "") {
-            dispatch(getCurrentUser()).then(
-                dispatch(actionChat.startConnection())
-            ).then(
-                dispatch(actionGame.startConnection())
-            )
+            dispatch(getCurrentUser())
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])

@@ -31,11 +31,11 @@ export const usePlayersStates = (roomId: string): PlayerDetail[] => {
   const isConnected = useConnectSocket();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const [player1, setPlayer1] = useState(emptyPlayerDetail);
-  const [player2, setPlayer2] = useState(emptyPlayerDetail);
-  const { currentPlayForFunRoom } = useAppSelector(selectGame);
   const usersStates = useUsersStates();
   const { currentUser } = useAppSelector(selectUsers);
+  const { currentPlayForFunRoom } = useAppSelector(selectGame);
+  const [player1, setPlayer1] = useState(emptyPlayerDetail);
+  const [player2, setPlayer2] = useState(emptyPlayerDetail);
 
   useEffect(() => {
     const isMatchRoom = currentPlayForFunRoom._id === roomId;
