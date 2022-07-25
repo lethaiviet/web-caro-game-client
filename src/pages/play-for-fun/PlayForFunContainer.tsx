@@ -8,8 +8,6 @@ import {
   Stack,
   Image,
 } from "react-bootstrap";
-import Scrollbars from "react-custom-scrollbars-2";
-import RoomCard from "./components/RoomCard";
 import { PlusCircle } from "react-bootstrap-icons";
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { actionGame, selectGame } from "../game/gameSlice";
@@ -17,8 +15,9 @@ import noRoomImage from "@assets/no-rooms.png";
 import { useNavigate } from "react-router";
 import { LOBBY, ROOM_ID_PARAM } from "@/navigation/const";
 import _ from "lodash";
-import { useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { selectUsers } from "../user/usersSlice";
+import RoomsCardList from "./components/RoomCardsList";
 
 const EmptyFromView = () => {
   return (
@@ -38,37 +37,65 @@ export default function PlayForFunContainer() {
   const { playForFunRooms, currentPlayForFunRoom } = useAppSelector(selectGame);
   const { currentUser } = useAppSelector(selectUsers);
   const [disableCreateRoomBtn, setDisableCreateRoomBtn] = useState(false);
+  const [filteredRoomsData, setFilteredRoomsData] = useState(playForFunRooms);
+  const [wordSearch, setWordSearch] = useState("");
 
   useEffect(() => {
-    if (currentPlayForFunRoom._id !== "") {
-      navigate(_.replace(LOBBY, ROOM_ID_PARAM, currentPlayForFunRoom._id));
+    const hasNoRoom = playForFunRooms.length === 0;
+    if (hasNoRoom) return;
+
+    const word = _.trim(wordSearch);
+    const isEmptyWordSearch = word === "";
+
+    if (isEmptyWordSearch) {
+      setFilteredRoomsData(playForFunRooms);
+      return;
     }
+
+    const roomsData = playForFunRooms.filter(
+      (room) => room._id.includes(word) || room.name.includes(word)
+    );
+    setFilteredRoomsData(roomsData);
+  }, [wordSearch, playForFunRooms]);
+
+  useEffect(() => {
+    const notFoundRoom = currentPlayForFunRoom._id === "";
+    if (notFoundRoom) return;
+
+    navigate(_.replace(LOBBY, ROOM_ID_PARAM, currentPlayForFunRoom._id));
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPlayForFunRoom]);
 
   useEffect(() => {
-    if (playForFunRooms.length > 0 || currentUser._id !== "") {
-      const findRoomJoinedIdx = playForFunRooms.findIndex((room) =>
-        _.find(room.players, { _id: currentUser._id })
+    const notFoundUser = currentUser._id === "";
+    const hasNoRoom = playForFunRooms.length === 0;
+
+    if (notFoundUser || hasNoRoom) return;
+
+    const findRoomJoinedIdx = playForFunRooms.findIndex((room) =>
+      _.find(room.players, { _id: currentUser._id })
+    );
+
+    const isJoinedAnyRoom = findRoomJoinedIdx >= 0;
+    setDisableCreateRoomBtn(isJoinedAnyRoom);
+
+    if (isJoinedAnyRoom) {
+      dispatch(
+        actionGame.joinPlayForFunRoom(playForFunRooms[findRoomJoinedIdx]._id)
       );
-
-      const isJoinedAnyRoom = findRoomJoinedIdx >= 0;
-      setDisableCreateRoomBtn(isJoinedAnyRoom);
-
-      if (isJoinedAnyRoom) {
-        dispatch(
-          actionGame.joinPlayForFunRoom(playForFunRooms[findRoomJoinedIdx]._id)
-        );
-      }
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playForFunRooms, currentUser]);
 
   const handleClickToCreateRoom = () => {
-    const dispatchCreateRoom = async () => {
-      dispatch(actionGame.createPlayForFunRoom());
-    };
+    dispatch(actionGame.createPlayForFunRoom());
+  };
 
-    dispatchCreateRoom();
+  const handleChangeWordSearch = (e: SyntheticEvent) => {
+    const target = e.target as HTMLFormElement;
+    setWordSearch(target.value);
   };
 
   return (
@@ -79,11 +106,15 @@ export default function PlayForFunContainer() {
             <InputGroup>
               <InputGroup.Text>Search</InputGroup.Text>
               <Form.Control
+                name="wordSearch"
                 placeholder="Room name or Room Id"
                 aria-label="room-name"
+                value={wordSearch}
+                onChange={handleChangeWordSearch}
               />
             </InputGroup>
           </Col>
+
           <Col className="d-flex justify-content-end">
             <Button
               className="d-flex align-items-center american-purple-btn"
@@ -96,20 +127,9 @@ export default function PlayForFunContainer() {
           </Col>
         </Row>
 
-        {playForFunRooms.length === 0 ? (
-          <EmptyFromView />
-        ) : (
-          <Scrollbars className="border">
-            <Container className="my-2">
-              <Row className="row-cols-lg-3 row-cols-md-2 row-cols-1 g-2">
-                {playForFunRooms.map((x) => (
-                  <Col>
-                    <RoomCard data={x} />
-                  </Col>
-                ))}
-              </Row>
-            </Container>
-          </Scrollbars>
+        {playForFunRooms.length === 0 && <EmptyFromView />}
+        {playForFunRooms.length > 0 && (
+          <RoomsCardList roomsData={filteredRoomsData} />
         )}
       </Stack>
     </Container>

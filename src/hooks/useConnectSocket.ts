@@ -11,12 +11,16 @@ export const useConnectSocket = () => {
   useEffect(() => {
     if (isGameConnected) return;
     dispatch(actionGame.startConnection());
-  }, [isGameConnected, dispatch]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isGameConnected]);
 
   useEffect(() => {
     if (isChatConnected) return;
     dispatch(actionChat.startConnection());
-  }, [isChatConnected, dispatch]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isChatConnected]);
 
   return isGameConnected && isChatConnected;
 };
