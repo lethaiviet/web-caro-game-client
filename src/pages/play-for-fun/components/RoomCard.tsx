@@ -31,17 +31,15 @@ const PlayersInfoSection = ({ data }: { data: UserStates[] }) => {
           />
         ))}
 
-        {Array(numOfEmptySlot)
-          .fill("")
-          .map((x, idx) => (
-            <div
-              key={idx}
-              className="m-1 p-0"
-              style={{ height: "2rem", width: "2rem" }}
-            >
-              <PersonCircle size="2rem" className="p-0" />
-            </div>
-          ))}
+        {_.fill(Array(numOfEmptySlot), "").map((x, idx) => (
+          <div
+            key={idx}
+            className="m-1 p-0"
+            style={{ height: "2rem", width: "2rem" }}
+          >
+            <PersonCircle size="2rem" className="p-0" />
+          </div>
+        ))}
       </Row>
     </>
   );
@@ -78,7 +76,7 @@ export default function RoomCard({ data }: { data: GameRoom }) {
               className="american-purple-btn"
               onClick={handleClickToJoinRoom}
             >
-              Join
+              {players.length < 2 ? "Join" : "Spectate"}
             </Button>
           </Col>
           <Col xs={{ span: 4, offset: 4 }}>
