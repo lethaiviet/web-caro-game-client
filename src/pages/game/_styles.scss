@@ -58,6 +58,10 @@ $border-size-O: $height-line-X;
   border: $O-color solid $border-size-O;
 }
 
+.animation-highlight {
+  animation: changeColor 4s alternate infinite;
+}
+
 .center {
   position: relative;
   top: 50%;
@@ -126,8 +130,53 @@ $border-size-O: $height-line-X;
   padding: 10px;
 }
 
+.pop-game-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 100vh;
+
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background-color: rgba(0, 0, 0, 0.315);
+}
+
+.pop-game-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  background-color: rgba(118, 75, 146, 0.75);
+  height: 40%;
+  width: 100%;
+  opacity: 1;
+
+  color: aliceblue;
+}
+
 @keyframes moveGradient {
   50% {
     background-position: 100% 50%;
+  }
+}
+
+@keyframes changeColor {
+  0% {
+    border: 1px solid $background-color;
+  }
+  25% {
+    border: 1px solid rgba(255, 255, 0, 0.952);
+  }
+  75% {
+    border: 1px solid yellow;
+  }
+  100% {
+    border: 1px solid $background-color;
   }
 }

@@ -25,6 +25,7 @@ const emptyPlayerDetail: PlayerDetail = {
   _id: "",
   isReady: false,
   symbol: Symbol.UNDEFINED,
+  isWinner: false,
 };
 
 export const usePlayersStates = (roomId: string): PlayerDetail[] => {
@@ -59,6 +60,7 @@ export const usePlayersStates = (roomId: string): PlayerDetail[] => {
         isReady: player.isReady,
         isMyTurn: player._id === currentPlayForFunRoom.turnOf,
         symbol: player.symbol,
+        isWinner: player.isWinner,
       };
 
       playerData.avatar =

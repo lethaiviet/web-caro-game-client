@@ -19,9 +19,10 @@ const emptyPlayForFunRoom: GameRoom = {
   spectators: [],
   isStarted: false,
   turnOf: "",
-  boardGame: { data: [] },
+  boardGame: { data: [], winnerPositions: [] },
   timeOut: 0,
   lastActionTime: 0,
+  type: "PlayForFun",
 };
 
 const initialState: GameState = {

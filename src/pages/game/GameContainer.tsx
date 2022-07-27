@@ -8,7 +8,9 @@ import { Card, Col, Container, Row, ProgressBar } from "react-bootstrap";
 import Scrollbars from "react-custom-scrollbars-2";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "../loading";
+import { selectUsers } from "../user/usersSlice";
 import Avatar from "./components/Avatar";
+import { PopupGame } from "./components/PopupGame";
 import { actionGame, selectGame } from "./gameSlice";
 
 const ProgressBarTimer = () => {
@@ -31,8 +33,11 @@ const ProgressBarTimer = () => {
 
   useEffect(() => {
     const gameRoom = currentPlayForFunRoom;
+    const isFinished = gameRoom.boardGame.winnerPositions.length > 0;
+    const isLoading = gameRoom.timeOut === 0;
 
-    if (gameRoom.timeOut === 0) return;
+    if (isFinished || isLoading) return;
+
     const lastActionTime =
       gameRoom.lastActionTime === 0 ? _.now() : gameRoom.lastActionTime;
 
@@ -48,7 +53,11 @@ const ProgressBarTimer = () => {
 
   useEffect(() => {
     const gameRoom = currentPlayForFunRoom;
-    if (gameRoom.timeOut !== 0 && timer <= gameRoom.timeOut) return;
+    const isFinished = gameRoom.boardGame.winnerPositions.length > 0;
+    const isLoading = gameRoom.timeOut === 0;
+    const isNotPlayerAFK = _.inRange(timer, gameRoom.timeOut);
+
+    if (isFinished || (!isLoading && isNotPlayerAFK)) return;
 
     const isLostConnection = timer >= gameRoom.timeOut + 2;
     if (isLostConnection) {
@@ -58,7 +67,6 @@ const ProgressBarTimer = () => {
     dispatch(
       actionGame.requestCheckPlayerAFKAndSwitchTurn(currentPlayForFunRoom._id)
     );
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timer]);
 
@@ -123,10 +131,17 @@ export default function GameContainer() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { currentPlayForFunRoom } = useAppSelector(selectGame);
+  const { currentUser } = useAppSelector(selectUsers);
   const [loading, setLoading] = useState(true);
+  const [completedGame, setCompletedGame] = useState(false);
   const [boardGameData, setBoardGameData] = useState<string[][]>([]);
 
   const handleClickToPlayGame = (e: React.MouseEvent<HTMLDivElement>) => {
+    const isTurnOfCurrentPlayer =
+      currentPlayForFunRoom.turnOf === currentUser._id;
+
+    if (completedGame || !isTurnOfCurrentPlayer) return;
+
     const c = _.toNumber(e.currentTarget.getAttribute("data-col"));
     const r = _.toNumber(e.currentTarget.getAttribute("data-row"));
     const pos: Position = { r, c };
@@ -145,11 +160,16 @@ export default function GameContainer() {
   });
 
   useEffect(() => {
-    const notFoundRoom = currentPlayForFunRoom._id === "";
+    const gameRoom = currentPlayForFunRoom;
+
+    const notFoundRoom = gameRoom._id === "";
     setLoading(notFoundRoom);
 
-    const data = currentPlayForFunRoom.boardGame.data;
+    const data = gameRoom.boardGame.data;
     setBoardGameData(data);
+
+    const isFinish = gameRoom.boardGame.winnerPositions.length > 0;
+    setCompletedGame(isFinish);
   }, [currentPlayForFunRoom]);
 
   return (
@@ -175,37 +195,48 @@ export default function GameContainer() {
           <div className="board-game-10x20">
             {boardGameData.map((rowData, r) =>
               rowData.map((cell, c) => {
-                if (cell === Symbol.O) {
-                  return (
-                    <div className="cell">
-                      <div className="O-symbol center" />
-                    </div>
-                  );
+                const winnerPositions =
+                  currentPlayForFunRoom.boardGame.winnerPositions;
+
+                let cellClazz = "cell";
+                if (completedGame) {
+                  const findPos = _.find(winnerPositions, { r, c });
+                  cellClazz = findPos ? "cell animation-highlight" : cellClazz;
                 }
 
-                if (cell === Symbol.X) {
-                  return (
-                    <div className="cell">
-                      <div className="X-symbol center" />
-                      <div className="X-symbol center" />
-                    </div>
-                  );
-                }
+                switch (cell) {
+                  case Symbol.O:
+                    return (
+                      <div className={cellClazz}>
+                        <div className="O-symbol center" />
+                      </div>
+                    );
 
-                return (
-                  <div
-                    className="cell"
-                    data-row={r}
-                    data-col={c}
-                    onClick={handleClickToPlayGame}
-                  />
-                );
+                  case Symbol.X:
+                    return (
+                      <div className={cellClazz}>
+                        <div className="X-symbol center" />
+                        <div className="X-symbol center" />
+                      </div>
+                    );
+
+                  default:
+                    return (
+                      <div
+                        className="cell"
+                        data-row={r}
+                        data-col={c}
+                        onClick={handleClickToPlayGame}
+                      />
+                    );
+                }
               })
             )}
           </div>
         </Scrollbars>
       </div>
 
+      {completedGame && <PopupGame />}
       {loading && <Loading />}
     </Container>
   );
