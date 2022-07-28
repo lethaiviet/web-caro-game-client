@@ -1,5 +1,3 @@
-import axios from "axios";
-import { BASE_URL_SERVER } from "@/config/const";
 import ErrorHandlerService from "./error-handler.service";
 import StorageService, {
   COOKIES_ITEMS,

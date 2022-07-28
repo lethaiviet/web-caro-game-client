@@ -41,8 +41,7 @@ const ProgressBarTimer = () => {
     const lastActionTime =
       gameRoom.lastActionTime === 0 ? _.now() : gameRoom.lastActionTime;
 
-    const timeElapsed = _.floor((_.now() - lastActionTime) / 1000);
-
+    const timeElapsed = Math.max(_.floor((_.now() - lastActionTime) / 1000), 0);
     setTimer((timer) => timeElapsed);
     const interval = setInterval(() => setTimer((timer) => timer + 1), 1000);
 
@@ -59,10 +58,10 @@ const ProgressBarTimer = () => {
 
     if (isFinished || (!isLoading && isNotPlayerAFK)) return;
 
-    const isLostConnection = timer >= gameRoom.timeOut + 2;
-    if (isLostConnection) {
-      navigate(ERROR_400);
-    }
+    // const isLostConnection = timer >= gameRoom.timeOut + 2;
+    // if (isLostConnection) {
+    //   navigate(ERROR_400);
+    // }
 
     dispatch(
       actionGame.requestCheckPlayerAFKAndSwitchTurn(currentPlayForFunRoom._id)

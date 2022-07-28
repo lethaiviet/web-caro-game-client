@@ -10,7 +10,7 @@ const getCurrentUser = createAsyncThunk<
   InsensitiveUserData,
   any,
   { rejectValue: MessageResponse }
->("auth/signup", async (_, thunkApi) => {
+>("users/getCurrentUser", async (_, thunkApi) => {
   try {
     return await UserService.getCurrentUser();
   } catch (error) {
@@ -22,7 +22,7 @@ const updateCurrentUser = createAsyncThunk<
   InsensitiveUserData,
   UpdateUserRequest,
   { rejectValue: MessageResponse }
->("auth/updateCurrentUser", async (data: UpdateUserRequest, thunkApi) => {
+>("users/updateCurrentUser", async (data: UpdateUserRequest, thunkApi) => {
   try {
     return await UserService.updateCurrentUser(data);
   } catch (error) {
@@ -34,7 +34,7 @@ const updateAvatarCurrentUser = createAsyncThunk<
   string,
   File,
   { rejectValue: MessageResponse }
->("auth/updateAvatarCurrentUser", async (file: File, thunkApi) => {
+>("users/updateAvatarCurrentUser", async (file: File, thunkApi) => {
   try {
     return await UserService.updateAvatarCurrentUser(file);
   } catch (error) {
