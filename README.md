@@ -64,6 +64,22 @@ The caro game includes features:
   
 ![image](https://user-images.githubusercontent.com/59600580/181726487-3e1e44bb-226d-48a0-9563-05d5380851fc.png)
   
+</details>
+
+<details><summary>4. Play game on "Play for fun" mode.</summary>
+  
+![image](https://user-images.githubusercontent.com/59600580/181727692-d4e518cc-10f9-464a-89f9-4e3f4facb78e.png)
+  
+![image](https://user-images.githubusercontent.com/59600580/181728124-f13271f8-137e-49ce-8959-d47c878edb12.png)
+
+![image](https://user-images.githubusercontent.com/59600580/181728240-c415441c-0ba3-43e4-be1a-8a847af36f94.png)
+
+![image](https://user-images.githubusercontent.com/59600580/181728557-5d6130fe-4488-4226-9539-d7636936e0dc.png)
+
+![image](https://user-images.githubusercontent.com/59600580/181728833-9801d1ba-dd7d-40ab-b4fc-ddb3a735242b.png)
+
+![image](https://user-images.githubusercontent.com/59600580/181728903-27c6e71c-93ab-4ee5-bfea-d455033f6a5e.png)
+
  </details>
 
 
