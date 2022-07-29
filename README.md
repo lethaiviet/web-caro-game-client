@@ -96,7 +96,7 @@ The caro game includes features:
   - [Reactjs](https://reactjs.org/) - A JavaScript library for building user interfaces.
   - [React-bootstrap](https://react-bootstrap.github.io/) - A complete re-implementation of the Bootstrap components using React.
   - [React-redux](https://react-redux.js.org/) - The official Redux UI binding library for React.
-  - [React-router-dom](https://reactrouter.com/docs/en/v6) - A library for client-side routing
+  - [React-router-dom](https://reactrouter.com/docs/en/v6) - A library for client-side routing.
   - [Socket.io](https://socket.io/) - A library that enables low-latency, bidirectional and event-based communication between a client and a server.
 
 <!-- CONTACT -->
