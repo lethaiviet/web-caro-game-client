@@ -44,7 +44,7 @@
 ## About The Project
 The caro game includes features:
 
-<details><summary>1. Register and verify the real email:</summary>
+<details><summary>1. Register and verify the real email.</summary>
 
 ![image](https://user-images.githubusercontent.com/59600580/181722718-61d5820c-d017-4d46-9630-3fa3063d3302.png)
 
@@ -52,13 +52,20 @@ The caro game includes features:
 
 </details>
 
-<details><summary>2. View my profile and change info (bio, username, avatar...)</summary>
+<details><summary>2. View and change your profile (bio, username, avatar...).</summary>
   
 ![image](https://user-images.githubusercontent.com/59600580/181724728-c0a14331-cb2f-4519-b1a4-77bf1a1e328f.png)
 
 ![image](https://user-images.githubusercontent.com/59600580/181724379-d9d4d226-a855-49a5-b4cc-3ac475f7058a.png)
   
 </details>
+
+<details><summary>3. Chat with your friends via the private chat system.</summary>
+  
+![image](https://user-images.githubusercontent.com/59600580/181726487-3e1e44bb-226d-48a0-9563-05d5380851fc.png)
+  
+ </details>
+
 
 ### Built With
 
