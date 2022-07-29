@@ -97,7 +97,9 @@ The caro game includes features:
 
 Le Thai Viet - [lethaiviet92@gmail.com]()
 
-Project Link: [https://github.com/lethaiviet/SeleniumLvl2](https://github.com/lethaiviet/SeleniumLvl2) |
+Project Link: 
+* [Caro game client](https://github.com/lethaiviet/web-caro-game-client)
+* [Caro game server](https://github.com/lethaiviet/web-caro-game-server)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
