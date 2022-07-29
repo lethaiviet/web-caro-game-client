@@ -85,12 +85,11 @@ The caro game includes features:
 
 ### Built With
 
-- [Selenium](http://www.seleniumhq.org/) - The web framework to automate browsers
-- [Gradle](https://gradle.org/) - Dependency Management
-- [Cucumber](https://cucumber.io/) - Behavior Driven Development (BDD) library
-- [Allure reports](http://allure.qatools.ru/) - Reporting
-- [Webdriver Manager](https://github.com/bonigarcia/webdrivermanager) - Driver Manager
-- [TestNg](https://testng.org/doc/) - a testing framework
+* Caro-game-web server (link git: https://github.com/lethaiviet/web-caro-game-server)
+  - [Expressjs](https://expressjs.com/) - The web framework for nodejs
+  - [Socket.io](https://socket.io/) - A library that enables low-latency, bidirectional and event-based communication between a client and a server
+  - [nodemailer](https://nodemailer.com/) - A module for Node.js applications to allow easy as cake email sending.
+  - [mongoosejs](https://mongoosejs.com/) - Elegant mongodb object modeling for node.js
 
 <!-- CONTACT -->
 
