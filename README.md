@@ -42,7 +42,7 @@
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
-The caro game includes:
+The caro game includes features:
 
 <details><summary>1. Register and verify the real email:</summary>
 
@@ -52,7 +52,13 @@ The caro game includes:
 
 </details>
 
+<details><summary>2. View my profile and change info (bio, username, avatar...)</summary>
+  
+![image](https://user-images.githubusercontent.com/59600580/181724728-c0a14331-cb2f-4519-b1a4-77bf1a1e328f.png)
 
+![image](https://user-images.githubusercontent.com/59600580/181724379-d9d4d226-a855-49a5-b4cc-3ac475f7058a.png)
+  
+</details>
 
 ### Built With
 
