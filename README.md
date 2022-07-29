@@ -42,14 +42,17 @@
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
+The caro game includes:
 
-[![Website need testing][product-screenshot]](http://www.railway.somee.com/Page/HomePage.cshtml)
+<details><summary>1. Register and verify the real email:</summary>
 
-You know, Time is not limit but with each person only have about 60 years in life. This framework maybe not absolutely
-necessary, but it is available to help out work better and faster. Save time for our life!
+![image](https://user-images.githubusercontent.com/59600580/181722718-61d5820c-d017-4d46-9630-3fa3063d3302.png)
 
-Test Automation Framework uses Selenium, BDD, TestNg and Allure reports to testing the http://www.railway.somee.com
-website
+![image](https://user-images.githubusercontent.com/59600580/181722409-95afd143-9e84-4f8f-b591-8b455feefc2c.png)
+
+</details>
+
+
 
 ### Built With
 
