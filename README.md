@@ -85,11 +85,19 @@ The caro game includes features:
 
 ### Built With
 
-* Caro-game-web server (link git: https://github.com/lethaiviet/web-caro-game-server)
+* Caro-game-web server ([link git here](https://github.com/lethaiviet/web-caro-game-server))
   - [Expressjs](https://expressjs.com/) - The web framework for nodejs.
   - [Socket.io](https://socket.io/) - A library that enables low-latency, bidirectional and event-based communication between a client and a server.
-  - [nodemailer](https://nodemailer.com/) - A module for Node.js applications to allow easy as cake email sending.
-  - [mongoosejs](https://mongoosejs.com/) - Elegant mongodb object modeling for node.js.
+  - [Nodemailer](https://nodemailer.com/) - A module for Node.js applications to allow easy as cake email sending.
+  - [Mongoosejs](https://mongoosejs.com/) - Elegant mongodb object modeling for node.js.
+  - [Jsonwebtoken](https://jwt.io/libraries) - A library for token signing/verification.
+
+* Caro-game-web client
+  - [Reactjs](https://reactjs.org/) - A JavaScript library for building user interfaces.
+  - [React-bootstrap](https://react-bootstrap.github.io/) - A complete re-implementation of the Bootstrap components using React.
+  - [React-redux](https://react-redux.js.org/) - The official Redux UI binding library for React.
+  - [React-router-dom](https://reactrouter.com/docs/en/v6) - A library for client-side routing
+  - [Socket.io](https://socket.io/) - A library that enables low-latency, bidirectional and event-based communication between a client and a server.
 
 <!-- CONTACT -->
 
