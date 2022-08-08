@@ -2,7 +2,6 @@ import {
   Card,
   Col,
   Container,
-  Image,
   Stack,
   ProgressBar,
   Row,
@@ -12,11 +11,11 @@ import {
 import { useState, SyntheticEvent, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { selectUsers } from "./usersSlice";
-import { getAvatarTemplate } from "@/utils/utils";
 import { CameraFill, ExclamationCircleFill } from "react-bootstrap-icons";
 import { updateAvatarCurrentUser, updateCurrentUser } from "./usersThunk";
 import { UpdateUserRequest } from "@/services/user.service";
 import { unwrapResult } from "@reduxjs/toolkit";
+import Avatar from "react-avatar";
 
 interface DetailProfileCardProps {
   onClick: () => void;
@@ -173,11 +172,7 @@ export const UserProfile = () => {
   });
 
   useEffect(() => {
-    const url =
-      currentUser.avatar === ""
-        ? getAvatarTemplate(currentUser.name, 250)
-        : currentUser.avatar;
-
+    const url = currentUser.avatar;
     setAvatar({ ...avatar, url });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
@@ -205,13 +200,13 @@ export const UserProfile = () => {
           <Card>
             <Card.Body>
               <Stack className="align-items-center">
-                <Image
+                <Avatar
+                  round
+                  color="gray"
+                  size="250"
+                  name={currentUser.name}
                   src={avatar.url}
-                  alt="user-avatar"
-                  fluid
-                  roundedCircle
-                  width="250"
-                ></Image>
+                />
                 <div className="mt-3">
                   <label>
                     <CameraFill size={20} />

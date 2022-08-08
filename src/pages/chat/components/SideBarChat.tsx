@@ -59,6 +59,8 @@ const SideBarChat = () => {
         (x) => x.name.includes(wordSearch) && x._id !== currentUser._id
       )
     );
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usersStates, wordSearch]);
 
   return (

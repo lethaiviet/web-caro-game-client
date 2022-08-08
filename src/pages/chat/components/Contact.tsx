@@ -1,8 +1,7 @@
 import { UserStates } from "@/interfaces/users.interface";
-import { getAvatarTemplate } from "@/utils/utils";
+import Avatar from "react-avatar";
 import { Badge, Stack } from "react-bootstrap";
 import { CircleFill, Circle } from "react-bootstrap-icons";
-import Avatar from "./Avatar";
 
 interface ContactProps {
   data: UserStates;
@@ -24,9 +23,11 @@ export default function Contact({
     >
       <Stack direction="horizontal" className="border-bottom P-20">
         <Avatar
-          src={
-            data.avatar === "" ? getAvatarTemplate(data.name, 75) : data.avatar
-          }
+          size="3rem"
+          round
+          color="gray"
+          name={data.name}
+          src={data.avatar}
         />
         <Stack className="justify-content-center pL-20">
           <small className="lh-1 mb-1">{data.name}</small>

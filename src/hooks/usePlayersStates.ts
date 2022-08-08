@@ -5,7 +5,6 @@ import { GAME, ROOM_ID_PARAM } from "@/navigation/const";
 import { actionGame, selectGame } from "@/pages/game/gameSlice";
 import { selectUsers } from "@/pages/user/usersSlice";
 import { getCurrentUser } from "@/pages/user/usersThunk";
-import { getAvatarTemplate } from "@/utils/utils";
 import _ from "lodash";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -62,11 +61,6 @@ export const usePlayersStates = (roomId: string): PlayerDetail[] => {
         symbol: player.symbol,
         isWinner: player.isWinner,
       };
-
-      playerData.avatar =
-        playerData.avatar === ""
-          ? getAvatarTemplate(playerData.name, 100)
-          : playerData.avatar;
 
       return playerData;
     };

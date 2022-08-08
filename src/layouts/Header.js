@@ -14,25 +14,19 @@ import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { selectUsers } from "@/pages/user/usersSlice";
 import { useEffect } from "react";
 import { getCurrentUser } from "@/pages/user/usersThunk";
-import { getAvatarTemplate } from "@/utils/utils"
 import { ChatDotsFill, GearWide, PersonCircle, BoxArrowRight } from "react-bootstrap-icons"
 import { logout } from "@/pages/auth/authThunk";
 import { unwrapResult } from "@reduxjs/toolkit";
 import { actionChat, selectChat } from "@/pages/chat/chatSlice";
 import { actionGame } from "@/pages/game/gameSlice";
+import Avatar from "react-avatar";
 
 
 function DropdownToggleTitle() {
     const { currentUser } = useAppSelector(selectUsers);
     return (
         <>
-            <Image
-                style={{ width: "2.3rem" }}
-                src={currentUser.avatar === "" ? getAvatarTemplate(currentUser.name, 50) : currentUser.avatar}
-                alt={currentUser.name}
-                fluid
-                roundedCircle
-            />
+            <Avatar size="2.3rem" name={currentUser.name} src={currentUser.avatar} round color="gray" />
             <span className="ms-2">{currentUser.name}</span>
         </>
     );

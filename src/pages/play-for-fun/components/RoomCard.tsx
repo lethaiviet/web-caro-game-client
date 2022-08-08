@@ -1,14 +1,13 @@
 import { useAppDispatch } from "@/app/hook";
 import { GameRoom } from "@/interfaces/game-rooms.interface";
 import { UserStates } from "@/interfaces/users.interface";
-import { getAvatarTemplate } from "@/utils/utils";
 import { useEffect, useState } from "react";
 import { Button, Card, Stack, Row, Col } from "react-bootstrap";
-import Avatar from "./Avatar";
 import { PersonCircle } from "react-bootstrap-icons";
 import _ from "lodash";
 import { actionGame } from "@/pages/game/gameSlice";
 import { useUsersStates } from "@/hooks/useUsersStates";
+import Avatar from "react-avatar";
 
 const PlayersInfoSection = ({ data }: { data: UserStates[] }) => {
   const numOfPlayer = data.length;
@@ -21,14 +20,16 @@ const PlayersInfoSection = ({ data }: { data: UserStates[] }) => {
 
       <Row>
         {data.map((player) => (
-          <Avatar
-            key={player._id}
-            src={
-              player.avatar === ""
-                ? getAvatarTemplate(player.name, 75)
-                : player.avatar
-            }
-          />
+          <div className="m-1 p-0" style={{ width: "2rem" }}>
+            <Avatar
+              key={player._id}
+              name={player.name}
+              src={player.avatar}
+              size="2rem"
+              round
+              color="gray"
+            />
+          </div>
         ))}
 
         {_.fill(Array(numOfEmptySlot), "").map((x, idx) => (

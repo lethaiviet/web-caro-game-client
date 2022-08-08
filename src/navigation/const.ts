@@ -12,7 +12,7 @@ export const ERROR_400 = "/400";
 export const OTHERS = "/*";
 export const PAGES_NAME_MAP = {
   [ROOT]: "Home",
-  [CHAT]: "Pricate Chat",
+  [CHAT]: "Private Chat",
   [USER_PROFILE]: "My Profile",
   [PLAY_FOR_FUN]: "Play For Fun",
   [LOBBY]: "Lobby",

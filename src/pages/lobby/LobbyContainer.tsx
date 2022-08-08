@@ -3,23 +3,29 @@ import { PlayerDetail, usePlayersStates } from "@/hooks/usePlayersStates";
 import { ERROR_400, PLAY_FOR_FUN } from "@/navigation/const";
 import _ from "lodash";
 import { useEffect, useState } from "react";
+import Avatar from "react-avatar";
 import { Button, Card, Col, Container, Row, Stack } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router";
 import { actionGame, selectGame } from "../game/gameSlice";
 import Loading from "../loading";
 import { selectUsers } from "../user/usersSlice";
-import Avatar from "./components/Avatar";
+
+const EmptySlotCard = () => {
+  return (
+    <Col className="d-flex align-items-center">
+      <Row>
+        <h1 className="text-center">Slot Empty</h1>
+      </Row>
+    </Col>
+  );
+};
 
 const Player1Card = ({ data }: { data: PlayerDetail }) => {
   return (
     <Card border="dark" className="lobby-card">
       <Row>
         {data._id === "" ? (
-          <Col className="d-flex align-items-center">
-            <Row>
-              <h1 className="text-center">Slot Empty</h1>
-            </Row>
-          </Col>
+          <EmptySlotCard />
         ) : (
           <>
             <Col lg={8} className="d-flex align-items-center">
@@ -34,8 +40,14 @@ const Player1Card = ({ data }: { data: PlayerDetail }) => {
                 </Row>
               </Stack>
             </Col>
-            <Col className="d-none d-lg-block">
-              <Avatar src={data.avatar} />
+            <Col lg={4} className="d-none d-lg-block">
+              <Avatar
+                src={data.avatar}
+                name={data.name}
+                round
+                size="7rem"
+                color="gray"
+              />
             </Col>
           </>
         )}
@@ -49,17 +61,19 @@ const Player2Card = ({ data }: { data: PlayerDetail }) => {
     <Card border="dark" className="lobby-card">
       <Row>
         {data._id === "" ? (
-          <Col className="d-flex align-items-center">
-            <Row>
-              <h1 className="text-center">Slot Empty</h1>
-            </Row>
-          </Col>
+          <EmptySlotCard />
         ) : (
           <>
             <Col lg={4} className="d-none d-lg-block">
-              <Avatar src={data.avatar} />
+              <Avatar
+                src={data.avatar}
+                name={data.name}
+                round
+                size="7rem"
+                color="gray"
+              />
             </Col>
-            <Col className="d-flex align-items-center">
+            <Col lg={8} className="d-flex align-items-center">
               <Stack>
                 <Row>
                   <h1 className="text-center">{data.name}</h1>

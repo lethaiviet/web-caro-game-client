@@ -6,11 +6,6 @@ export const getFirstLetter = (str: string): string => {
   return str.charAt(0).toUpperCase();
 };
 
-export const getAvatarTemplate = (name: string, size: number): string => {
-  const firstLetter = getFirstLetter(name);
-  return `https://via.placeholder.com/${size}?text=${firstLetter}`;
-};
-
 export const getCurrentTime = (): string => {
   return new Date().toISOString().slice(0, -1) + "+00:00";
 };

@@ -4,17 +4,17 @@ import { Position, Symbol } from "@/interfaces/game-rooms.interface";
 import { ERROR_400 } from "@/navigation/const";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
+import Avatar from "react-avatar";
 import { Card, Col, Container, Row, ProgressBar } from "react-bootstrap";
 import Scrollbars from "react-custom-scrollbars-2";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "../loading";
 import { selectUsers } from "../user/usersSlice";
-import Avatar from "./components/Avatar";
 import { PopupGame } from "./components/PopupGame";
 import { actionGame, selectGame } from "./gameSlice";
 
 const ProgressBarTimer = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { currentPlayForFunRoom } = useAppSelector(selectGame);
   const [timer, setTimer] = useState(0);
@@ -96,7 +96,13 @@ const GameHeader = () => {
               </h5>
             </Col>
             <Col lg={3} className="d-flex justify-content-center">
-              <Avatar src={player1.avatar} />
+              <Avatar
+                src={player1.avatar}
+                name={player1.name}
+                size="3rem"
+                color="gray"
+                round
+              />
             </Col>
           </Row>
         </Card>
@@ -112,7 +118,13 @@ const GameHeader = () => {
         >
           <Row className="d-flex justify-content-start align-items-center">
             <Col lg={3} className="d-flex justify-content-center">
-              <Avatar src={player2.avatar} />
+              <Avatar
+                src={player2.avatar}
+                name={player2.name}
+                size="3rem"
+                color="gray"
+                round
+              />
             </Col>
             <Col className="d-none d-lg-block">
               <h5 className="text-center">
