@@ -14,7 +14,7 @@ const EmptySlotCard = () => {
   return (
     <Col className="d-flex align-items-center">
       <Row>
-        <h1 className="text-center">Slot Empty</h1>
+        <h1 className="text-center">Empty Slot</h1>
       </Row>
     </Col>
   );
