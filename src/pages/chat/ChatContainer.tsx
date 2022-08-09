@@ -8,7 +8,11 @@ export default function ChatContainer() {
   const { isConnected } = useAppSelector(selectChat);
 
   useEffect(() => {
-    if (isConnected) dispatch(actionChat.requestGetAllUsersState());
+    if (isConnected) {
+      dispatch(actionChat.requestGetAllUsersState());
+    } else {
+      dispatch(actionChat.startConnection());
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected]);
 
